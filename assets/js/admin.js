@@ -1,0 +1,637 @@
+/* Flux Athletics — site admin.
+
+   Edits content.json in the browser, previews the real pages live using the
+   same tools/templates.js the build uses, and commits the regenerated site to
+   GitHub in one commit. No server, no framework.
+
+   The form is generated from the shape of content.json itself, so any field you
+   add to that file automatically becomes editable here. */
+(function () {
+  'use strict';
+
+  var DRAFT_KEY = 'flux_admin_draft';
+  var TOKEN_KEY = 'flux_admin_gh_token';
+
+  var state = {
+    content: null,     // what you are editing
+    published: null,   // what content.json held when the page loaded
+    section: 'site',
+    page: 'index.html',
+  };
+
+  /* ------------------------------------------------------------------ *
+   * Labels and field types
+   * ------------------------------------------------------------------ */
+  var LABELS = {
+    site: 'Site & identity', brand: 'Brand colours', nav: 'Navigation',
+    footer: 'Footer', home: 'Home page', commandCenter: 'Command Center',
+    toolkit: 'Broadcaster’s Toolkit', consulting: 'Consulting', about: 'About',
+    contact: 'Contact', notFound: '404 page', repo: 'Publishing target',
+
+    meta: 'Search & social meta', hero: 'Hero', cta: 'Closing CTA band',
+    title: 'Title', description: 'Description', heading: 'Heading',
+    eyebrow: 'Eyebrow (small label above the heading)', lead: 'Lead paragraph',
+    body: 'Body text', label: 'Label', href: 'Link target', num: 'Small label',
+    titleLines: 'Headline (one line per box)', titleAccent: 'Second line (accent colour)',
+    k: 'Large text', v: 'Supporting text', q: 'Question', a: 'Answer',
+    crumb: 'Breadcrumb text', buttons: 'Buttons', button: 'Button',
+    items: 'Items', cards: 'Cards', list: 'Bullet list', links: 'Links',
+    paragraphs: 'Paragraphs', columns: 'Columns', stats: 'Stats',
+    steps: 'Steps', style: 'Style',
+
+    whatWeDo: '“What we do” intro', pillars: 'Three pillars',
+    commandCenterSplit: 'Command Center feature block',
+    toolkitSplit: 'Toolkit feature block', consultingSection: 'Consulting block',
+    howWeWork: 'How we work', marquee: 'Scrolling ticker words',
+    mockRows: 'Dashboard mock rows', mockLabel: 'Mock window title',
+    scoreboard: 'Scoreboard graphic', lowerThird: 'Lower third graphic',
+    sponsorBug: 'Sponsor bug text', preview: 'On-air preview', caption: 'Caption',
+    problem: 'Problem section', modules: 'Modules', faq: 'FAQ',
+    kit: 'The kit', compat: 'Compatibility section', why: 'Why us',
+    practices: 'Practice areas', engagements: 'Engagement types', process: 'Process',
+    intro: 'Intro', beliefs: 'Beliefs', team: 'Team block',
+    details: 'Contact details', form: 'Contact form',
+    interests: 'Interest dropdown options', include: '“Good things to include” list',
+    expect: 'What to expect', expectTitle: '“What to expect” label',
+    includeTitle: '“Good things to include” label',
+    messageLabel: 'Message field label', messagePlaceholder: 'Message field placeholder',
+    submitLabel: 'Submit button label', action: 'Form endpoint URL',
+    note: 'Internal note (becomes an HTML comment — not visible on the page)',
+    word: 'Large footer line', legal: 'Legal line',
+    wordmarkBold: 'Wordmark — bold part', wordmarkLight: 'Wordmark — light part',
+    ctaLabel: 'Header button label', domain: 'Domain', email: 'Email address',
+    name: 'Name', primary: 'Primary accent', support: 'Support accent',
+    ink: 'Dark background', paper: 'Light background',
+    owner: 'GitHub owner', branch: 'Branch', chip: 'Status pill text',
+    chipStyle: 'Status pill colour', theme: 'Accent theme', meta_: '',
+    home_: '', clock: 'Clock', away: 'Away label', awayScore: 'Away score',
+    homeScore: 'Home score', sponsor: 'Sponsor line', linkLabel: 'Link text',
+    linkHref: 'Link target',
+  };
+
+  var SECTION_ORDER = ['site', 'brand', 'nav', 'home', 'commandCenter', 'toolkit',
+    'consulting', 'about', 'contact', 'notFound', 'footer', 'repo'];
+
+  var SECTION_HELP = {
+    site: 'Company name, domain and email. The domain feeds the canonical and social tags on every page.',
+    brand: 'Change these and every page updates. Colours are applied to the site the moment you publish.',
+    nav: 'The header and mobile menu. Changing a label here changes it on all seven pages at once.',
+    home: 'Everything on the home page, top to bottom.',
+    commandCenter: 'The Athletics Command Center product page.',
+    toolkit: 'The Broadcaster’s Toolkit product page.',
+    consulting: 'The consulting page.',
+    about: 'The about page.',
+    contact: 'The contact page, including the form dropdown options and where the form posts.',
+    notFound: 'The page people see when a URL does not exist.',
+    footer: 'The footer, shown on every page.',
+    repo: 'Where Publish sends your changes. Only change this if you move the repository.',
+  };
+
+  var SECTION_PAGE = {
+    home: 'index.html', commandCenter: 'command-center.html',
+    toolkit: 'broadcasters-toolkit.html', consulting: 'consulting.html',
+    about: 'about.html', contact: 'contact.html', notFound: '404.html',
+  };
+
+  var SELECTS = {
+    style: ['primary', 'ghost'],
+    chipStyle: ['live', 'ok', 'pend'],
+    theme: ['primary', 'support'],
+  };
+
+  function labelFor(key) {
+    if (LABELS[key]) return LABELS[key];
+    return key.replace(/([A-Z])/g, ' $1')
+      .replace(/^./, function (m) { return m.toUpperCase(); })
+      .trim();
+  }
+
+  function typeFor(key, value, path) {
+    if (SELECTS[key]) return 'select';
+    if (path.indexOf('brand.') === 0) return 'color';
+    if (key === 'href' || key === 'action' || key === 'domain' || key === 'linkHref') return 'url';
+    if (typeof value === 'string' && (value.indexOf('\n') !== -1 || value.length > 80)) return 'textarea';
+    return 'text';
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Small DOM helpers
+   * ------------------------------------------------------------------ */
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === 'class') n.className = attrs[k];
+      else if (k === 'text') n.textContent = attrs[k];
+      else if (k.indexOf('on') === 0) n.addEventListener(k.slice(2), attrs[k]);
+      else if (attrs[k] !== null && attrs[k] !== undefined) n.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function (c) { if (c) n.appendChild(c); });
+    return n;
+  }
+  var $ = function (s) { return document.querySelector(s); };
+
+  var toastEl = $('#toast'), toastTimer;
+  function toast(msg, isErr) {
+    toastEl.textContent = msg;
+    toastEl.className = 'toast is-up' + (isErr ? ' is-err' : '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.className = 'toast'; }, isErr ? 7000 : 3200);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * State
+   * ------------------------------------------------------------------ */
+  function isDirty() {
+    return JSON.stringify(state.content) !== JSON.stringify(state.published);
+  }
+
+  function markChanged(structural) {
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(state.content)); } catch (e) { /* private mode */ }
+    updateState();
+    schedulePreview();
+    if (structural) { renderEditor(); renderSidebar(); }
+  }
+
+  function updateState() {
+    var s = $('#state');
+    if (isDirty()) {
+      s.className = 'bar__state';
+      s.innerHTML = '<b>●</b> unpublished changes';
+    } else {
+      s.className = 'bar__state is-clean';
+      s.innerHTML = '<b>●</b> up to date';
+    }
+  }
+
+  function blankLike(v) {
+    if (Array.isArray(v)) return [];
+    if (v && typeof v === 'object') {
+      var o = {};
+      Object.keys(v).forEach(function (k) { o[k] = blankLike(v[k]); });
+      return o;
+    }
+    return '';
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Form building — driven by the shape of the data
+   * ------------------------------------------------------------------ */
+  function control(obj, key, path) {
+    var value = obj[key];
+    var type = typeFor(key, value, path);
+    var field = el('div', { class: 'f' });
+    var id = 'f_' + path.replace(/[^a-z0-9]/gi, '_');
+    field.appendChild(el('label', { for: id, text: labelFor(key) }));
+
+    var input;
+    if (type === 'select') {
+      input = el('select', { id: id });
+      SELECTS[key].forEach(function (opt) {
+        input.appendChild(el('option', { value: opt, text: opt, selected: value === opt ? '' : null }));
+      });
+    } else if (type === 'textarea') {
+      input = el('textarea', { id: id, rows: String(Math.min(8, Math.max(2, String(value).split('\n').length + 1))) });
+      input.value = value;
+    } else if (type === 'color') {
+      var wrap = el('div', { class: 'color' });
+      var swatch = el('input', { type: 'color', value: /^#[0-9a-f]{6}$/i.test(value) ? value : '#000000', 'aria-label': labelFor(key) + ' swatch' });
+      var text = el('input', { type: 'text', id: id, value: value });
+      swatch.addEventListener('input', function () { text.value = swatch.value.toUpperCase(); obj[key] = text.value; markChanged(); });
+      text.addEventListener('input', function () {
+        obj[key] = text.value;
+        if (/^#[0-9a-f]{6}$/i.test(text.value)) swatch.value = text.value;
+        markChanged();
+      });
+      wrap.appendChild(swatch); wrap.appendChild(text);
+      field.appendChild(wrap);
+      if (key === 'primary') field.appendChild(el('p', { class: 'f__hint', text: 'The social share image (assets/img/og.png) is a rendered file — run "npm run og" to regenerate it after a colour change.' }));
+      return field;
+    } else {
+      input = el('input', { type: type === 'url' ? 'text' : 'text', id: id, value: value });
+    }
+
+    input.addEventListener('input', function () { obj[key] = input.value; markChanged(); });
+    field.appendChild(input);
+
+    if (key === 'action') field.appendChild(el('p', { class: 'f__hint', text: 'Leave empty and the form opens the visitor’s email app pre-filled. Paste a Formspree/Basin endpoint to collect submissions instead.' }));
+    if (key === 'titleLines') field.appendChild(el('p', { class: 'f__hint', text: 'Each entry is one line of the big headline.' }));
+    return field;
+  }
+
+  function itemTitle(item, i) {
+    var v = item.title || item.label || item.k || item.q || item.heading || item.num || item.name;
+    if (typeof v === 'string' && v) return v.length > 46 ? v.slice(0, 46) + '…' : v;
+    return 'Item ' + (i + 1);
+  }
+
+  function listEditor(parent, key, path) {
+    var arr = parent[key];
+    var simple = arr.length === 0 || typeof arr[0] === 'string';
+    var box = el('div', { class: 'list' + (simple ? ' list--simple' : '') });
+
+    arr.forEach(function (item, i) {
+      var row = el('div', { class: 'list__item' });
+      var tools = el('div', { class: 'list__tools' }, [
+        el('button', {
+          type: 'button', title: 'Move up', text: '↑', onclick: function () {
+            if (i === 0) return;
+            arr.splice(i - 1, 0, arr.splice(i, 1)[0]); markChanged(true);
+          }
+        }),
+        el('button', {
+          type: 'button', title: 'Move down', text: '↓', onclick: function () {
+            if (i === arr.length - 1) return;
+            arr.splice(i + 1, 0, arr.splice(i, 1)[0]); markChanged(true);
+          }
+        }),
+        el('button', {
+          class: 'rm', type: 'button', title: 'Remove', text: '✕', onclick: function () {
+            if (!confirm('Remove "' + (simple ? item : itemTitle(item, i)) + '"?')) return;
+            arr.splice(i, 1); markChanged(true);
+          }
+        }),
+      ]);
+
+      if (simple) {
+        var inp = el('input', { type: 'text', value: item, 'aria-label': labelFor(key) + ' ' + (i + 1) });
+        inp.addEventListener('input', function () { arr[i] = inp.value; markChanged(); });
+        row.appendChild(el('span', { class: 'list__n', text: String(i + 1).padStart(2, '0') }));
+        row.appendChild(inp);
+        row.appendChild(tools);
+      } else {
+        row.appendChild(el('div', { class: 'list__head' }, [
+          el('span', { class: 'list__n', text: String(i + 1).padStart(2, '0') }),
+          el('strong', { style: 'font-size:12.5px;font-weight:600', text: itemTitle(item, i) }),
+          tools,
+        ]));
+        Object.keys(item).forEach(function (k) {
+          row.appendChild(nodeFor(item, k, path + '[' + i + '].' + k));
+        });
+      }
+      box.appendChild(row);
+    });
+
+    box.appendChild(el('button', {
+      class: 'btn btn--sm list__add', type: 'button', text: '+ Add ' + labelFor(key).toLowerCase().replace(/s$/, ''),
+      onclick: function () {
+        arr.push(arr.length ? blankLike(arr[0]) : '');
+        markChanged(true);
+      }
+    }));
+    return box;
+  }
+
+  /* Returns the right editor for parent[key], whatever shape it is. */
+  function nodeFor(parent, key, path) {
+    var value = parent[key];
+
+    if (Array.isArray(value)) {
+      var d = el('details', { class: 'grp grp--nested', open: '' }, [
+        el('summary', {}, [
+          document.createTextNode(labelFor(key)),
+          el('span', { class: 'side__count', text: value.length + ' item' + (value.length === 1 ? '' : 's') }),
+        ]),
+      ]);
+      d.appendChild(el('div', { class: 'grp__body' }, [listEditor(parent, key, path)]));
+      return d;
+    }
+
+    if (value && typeof value === 'object') {
+      var g = el('details', { class: 'grp grp--nested', open: '' }, [
+        el('summary', { text: labelFor(key) }),
+      ]);
+      var body = el('div', { class: 'grp__body' });
+      Object.keys(value).forEach(function (k) { body.appendChild(nodeFor(value, k, path + '.' + k)); });
+      g.appendChild(body);
+      return g;
+    }
+
+    return control(parent, key, path);
+  }
+
+  function renderEditor() {
+    var key = state.section;
+    var data = state.content[key];
+    $('#ed-title').textContent = labelFor(key);
+    $('#ed-sub').textContent = SECTION_HELP[key] || '';
+
+    var host = $('#fields');
+    host.innerHTML = '';
+
+    if (data && typeof data === 'object' && !Array.isArray(data)) {
+      Object.keys(data).forEach(function (k) {
+        var v = data[k];
+        if ((v && typeof v === 'object') || Array.isArray(v)) {
+          host.appendChild(nodeFor(data, k, key + '.' + k));
+        } else {
+          var g = el('details', { class: 'grp', open: '' }, [el('summary', { text: labelFor(key) })]);
+          var existing = host.querySelector('[data-loose]');
+          if (!existing) {
+            g.setAttribute('data-loose', '');
+            g.appendChild(el('div', { class: 'grp__body' }));
+            host.insertBefore(g, host.firstChild);
+            existing = g;
+          }
+          existing.querySelector('.grp__body').appendChild(control(data, k, key + '.' + k));
+        }
+      });
+    } else if (Array.isArray(data)) {
+      var g2 = el('details', { class: 'grp', open: '' }, [
+        el('summary', {}, [
+          document.createTextNode(labelFor(key)),
+          el('span', { class: 'side__count', text: data.length + ' items' }),
+        ]),
+      ]);
+      g2.appendChild(el('div', { class: 'grp__body' }, [listEditor(state.content, key, key)]));
+      host.appendChild(g2);
+    }
+  }
+
+  function renderSidebar() {
+    var side = $('#side');
+    side.innerHTML = '';
+    side.appendChild(el('p', { class: 'side__h', text: 'Sections' }));
+    SECTION_ORDER.forEach(function (key) {
+      if (!(key in state.content)) return;
+      var v = state.content[key];
+      var count = Array.isArray(v) ? v.length : null;
+      side.appendChild(el('button', {
+        class: 'side__item', 'aria-current': key === state.section ? 'true' : 'false',
+        onclick: function () {
+          state.section = key;
+          if (SECTION_PAGE[key]) { state.page = SECTION_PAGE[key]; $('#prev-page').value = state.page; }
+          renderSidebar(); renderEditor(); renderPreview();
+        }
+      }, [
+        el('span', { text: labelFor(key) }),
+        count !== null ? el('span', { class: 'side__count', text: String(count) }) : null,
+      ]));
+    });
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Preview
+   * ------------------------------------------------------------------ */
+  /* The preview pane is far narrower than a desktop viewport, so render the
+     iframe at a real desktop width and scale it down to fit. Without this,
+     "Desktop" would just be showing the mobile breakpoint. */
+  function fitPreview() {
+    var stage = $('#stage');
+    var frame = $('#frame');
+    if (!stage || !frame) return;
+    var target = stage.classList.contains('is-mobile') ? 390 : 1280;
+    var scale = Math.min(1, stage.clientWidth / target);
+    frame.style.width = target + 'px';
+    frame.style.height = (stage.clientHeight / scale) + 'px';
+    frame.style.transform = 'scale(' + scale + ')';
+  }
+
+  var previewTimer;
+  function schedulePreview() {
+    clearTimeout(previewTimer);
+    previewTimer = setTimeout(renderPreview, 350);
+  }
+
+  function renderPreview() {
+    var files;
+    try {
+      files = window.FluxTemplates.renderAll(state.content);
+    } catch (e) {
+      toast('Preview failed: ' + e.message, true);
+      return;
+    }
+    var html = files[state.page];
+    if (!html) return;
+    /* Relative asset paths must resolve against the site root, and reveal
+       animations should not hide content in a static preview. */
+    html = html.replace('<head>', '<head>\n<base href="' + location.href + '">')
+               .replace('</head>', '<style>[data-reveal]{opacity:1!important;transform:none!important}</style></head>');
+    $('#frame').srcdoc = html;
+    fitPreview();
+  }
+
+  /* ------------------------------------------------------------------ *
+   * GitHub publishing
+   * ------------------------------------------------------------------ */
+  function b64(str) {
+    var bytes = new TextEncoder().encode(str);
+    var bin = '', CH = 0x8000;
+    for (var i = 0; i < bytes.length; i += CH) {
+      bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+    }
+    return btoa(bin);
+  }
+
+  function ghLog(msg, cls) {
+    var log = $('#gh-log');
+    log.hidden = false;
+    var line = el('div', { class: cls || '', text: msg });
+    log.appendChild(line);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  async function gh(token, path, opts) {
+    var res = await fetch('https://api.github.com' + path, Object.assign({}, opts, {
+      headers: Object.assign({
+        Authorization: 'Bearer ' + token,
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+      }, (opts && opts.headers) || {}),
+    }));
+    if (!res.ok) {
+      var text = await res.text();
+      var msg = res.status + ' on ' + path;
+      try { msg += ' — ' + (JSON.parse(text).message || ''); } catch (e) { /* non-JSON */ }
+      if (res.status === 401) msg += ' (token rejected — check it has not expired)';
+      if (res.status === 404) msg += ' (check the owner/repo/branch, and that the token can reach this repository)';
+      throw new Error(msg);
+    }
+    return res.json();
+  }
+
+  async function publish(token, message) {
+    var repo = state.content.repo;
+    var base = '/repos/' + repo.owner + '/' + repo.name;
+    var files = window.FluxTemplates.renderAll(state.content);
+    files['content.json'] = JSON.stringify(state.content, null, 2) + '\n';
+
+    var paths = Object.keys(files);
+    ghLog('Publishing ' + paths.length + ' files to ' + repo.owner + '/' + repo.name + '@' + repo.branch);
+
+    var ref = await gh(token, base + '/git/ref/heads/' + repo.branch);
+    var baseSha = ref.object.sha;
+    ghLog('base commit ' + baseSha.slice(0, 7));
+
+    var baseCommit = await gh(token, base + '/git/commits/' + baseSha);
+
+    var tree = [];
+    for (var i = 0; i < paths.length; i++) {
+      var p = paths[i];
+      var blob = await gh(token, base + '/git/blobs', {
+        method: 'POST',
+        body: JSON.stringify({ content: b64(files[p]), encoding: 'base64' }),
+      });
+      tree.push({ path: p, mode: '100644', type: 'blob', sha: blob.sha });
+      ghLog('  blob ' + p);
+    }
+
+    var newTree = await gh(token, base + '/git/trees', {
+      method: 'POST',
+      body: JSON.stringify({ base_tree: baseCommit.tree.sha, tree: tree }),
+    });
+
+    var commit = await gh(token, base + '/git/commits', {
+      method: 'POST',
+      body: JSON.stringify({ message: message, tree: newTree.sha, parents: [baseSha] }),
+    });
+    ghLog('commit ' + commit.sha.slice(0, 7));
+
+    await gh(token, base + '/git/refs/heads/' + repo.branch, {
+      method: 'PATCH',
+      body: JSON.stringify({ sha: commit.sha }),
+    });
+
+    ghLog('Published. Your host will redeploy shortly.', 'ok');
+    return commit;
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Wiring
+   * ------------------------------------------------------------------ */
+  function download(name, text, type) {
+    var blob = new Blob([text], { type: type || 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = el('a', { href: url, download: name });
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  function wire() {
+    $('#btn-download').addEventListener('click', function () {
+      download('content.json', JSON.stringify(state.content, null, 2) + '\n');
+      toast('Downloaded content.json — commit it to publish.');
+    });
+
+    $('#btn-import').addEventListener('click', function () { $('#file-import').click(); });
+    $('#file-import').addEventListener('change', function (e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        try {
+          state.content = JSON.parse(reader.result);
+          markChanged(true); renderSidebar(); renderPreview();
+          toast('Imported ' + file.name);
+        } catch (err) { toast('That file is not valid JSON.', true); }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    });
+
+    $('#btn-revert').addEventListener('click', function () {
+      if (!isDirty()) return toast('Nothing to discard.');
+      if (!confirm('Discard all unpublished changes and go back to the live content?')) return;
+      state.content = JSON.parse(JSON.stringify(state.published));
+      try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+      renderSidebar(); renderEditor(); renderPreview(); updateState();
+      toast('Reverted to published content.');
+    });
+
+    var dlg = $('#dlg-publish');
+    $('#btn-publish').addEventListener('click', function () {
+      var r = state.content.repo || {};
+      $('#dlg-repo').textContent = r.owner + '/' + r.name + ' @ ' + r.branch;
+      try {
+        var saved = localStorage.getItem(TOKEN_KEY);
+        if (saved) { $('#gh-token').value = saved; $('#gh-remember').checked = true; }
+      } catch (e) {}
+      $('#gh-log').innerHTML = ''; $('#gh-log').hidden = true;
+      dlg.showModal();
+    });
+
+    $('#gh-go').addEventListener('click', async function () {
+      var token = $('#gh-token').value.trim();
+      if (!token) return toast('Paste a GitHub token first.', true);
+      var btn = this;
+      btn.disabled = true;
+      btn.textContent = 'Publishing…';
+      try {
+        await publish(token, $('#gh-message').value.trim() || 'Update site content');
+        try {
+          if ($('#gh-remember').checked) localStorage.setItem(TOKEN_KEY, token);
+          else localStorage.removeItem(TOKEN_KEY);
+        } catch (e) {}
+        state.published = JSON.parse(JSON.stringify(state.content));
+        try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+        updateState();
+        toast('Published to GitHub.');
+        setTimeout(function () { dlg.close(); }, 1400);
+      } catch (err) {
+        ghLog('FAILED: ' + err.message, 'err');
+        toast('Publish failed — see the log in the dialog.', true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Publish';
+      }
+    });
+
+    $('#prev-page').addEventListener('change', function () {
+      state.page = this.value;
+      renderPreview();
+    });
+
+    document.querySelectorAll('.preview__widths button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('.preview__widths button').forEach(function (o) {
+          o.setAttribute('aria-pressed', String(o === b));
+        });
+        $('#stage').classList.toggle('is-mobile', b.dataset.w === 'mobile');
+        fitPreview();
+      });
+    });
+
+    window.addEventListener('resize', fitPreview);
+
+    window.addEventListener('beforeunload', function (e) {
+      if (isDirty()) { e.preventDefault(); e.returnValue = ''; }
+    });
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Boot
+   * ------------------------------------------------------------------ */
+  fetch('content.json', { cache: 'no-store' })
+    .then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function (published) {
+      state.published = published;
+      state.content = JSON.parse(JSON.stringify(published));
+
+      var restored = false;
+      try {
+        var draft = localStorage.getItem(DRAFT_KEY);
+        if (draft) {
+          var parsed = JSON.parse(draft);
+          if (JSON.stringify(parsed) !== JSON.stringify(published)) {
+            state.content = parsed;
+            restored = true;
+          }
+        }
+      } catch (e) { /* ignore a corrupt draft */ }
+
+      wire();
+      renderSidebar();
+      renderEditor();
+      renderPreview();
+      updateState();
+      if (restored) toast('Restored your unpublished draft from this browser.');
+    })
+    .catch(function (e) {
+      $('#ed-title').textContent = 'Could not load content.json';
+      $('#ed-sub').textContent =
+        'The admin reads content.json from the same folder. Open this page over http:// (run "npm run serve") rather than from a file:// path. (' + e.message + ')';
+      $('#state').textContent = 'error';
+    });
+})();

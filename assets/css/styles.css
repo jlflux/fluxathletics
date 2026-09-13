@@ -12,11 +12,14 @@
   --paper:      #F5F3EF;
   --paper-2:    #FFFFFF;
 
-  /* Accents */
-  --flux:       #FF5A1F;   /* primary — Command Center, CTAs */
-  --flux-dim:   #E44A12;
-  --volt:       #3DE1FF;   /* secondary — Broadcaster's Toolkit */
-  --field:      #B8FF3C;   /* tertiary — Consulting */
+  /* Accents — overridden per-site by the #brand-tokens block in each page head */
+  --flux:       #0DF786;   /* primary — Command Center, buttons, CTA band */
+  --volt:       #889165;   /* support — Broadcaster's Toolkit */
+  --field:      #889165;   /* support — Consulting */
+
+  /* Auto-darkened accent for text on light panels. Derived, so it stays
+     legible whatever accent colour is set above. */
+  --accent-ink: color-mix(in srgb, var(--accent, var(--flux)) 45%, var(--ink));
 
   /* Text */
   --on-dark:        #F5F3EF;
@@ -427,12 +430,12 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   width: 70vw; height: 70vw;
   max-width: 900px; max-height: 900px;
   right: -12vw; top: -18vw;
-  background: radial-gradient(circle, rgba(255,90,31,0.28), transparent 62%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--flux) 30%, transparent), transparent 62%);
   filter: blur(30px);
 }
 .hero__glow--2 {
   right: auto; left: -18vw; top: auto; bottom: -28vw;
-  background: radial-gradient(circle, rgba(61,225,255,0.16), transparent 62%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--volt) 26%, transparent), transparent 62%);
 }
 .hero__inner { position: relative; z-index: 1; width: 100%; }
 
@@ -554,6 +557,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .pillar--volt  { --accent: var(--volt); }
 .pillar--field { --accent: var(--field); }
 
+.num,
 .pillar__num {
   font-family: var(--font-mono);
   font-size: var(--fs-micro);
@@ -616,6 +620,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .feature-list__title { font-size: 1.0625rem; font-weight: 700; font-family: var(--font-display); text-transform: uppercase; letter-spacing: -0.01em; }
 .feature-list__body { font-size: 0.9375rem; color: var(--on-dark-muted); margin-top: 0.3rem; }
 .panel--light .feature-list__body { color: var(--on-light-muted); }
+.panel--light .feature-list__num { color: color-mix(in srgb, var(--accent, var(--flux)) 45%, var(--ink)); }
 
 /* ---------- 12. Product mock (pure CSS/SVG chrome) ---------- */
 .mock {
@@ -675,11 +680,12 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   border-radius: 999px;
   white-space: nowrap;
 }
-.chip--live  { background: rgba(255,90,31,0.16);  color: var(--flux); }
-.chip--ok    { background: rgba(184,255,60,0.14); color: var(--field); }
-.chip--pend  { background: rgba(61,225,255,0.14); color: var(--volt); }
-.panel--light .chip--ok { background: rgba(90,140,10,0.12); color: #4C7A00; }
-.panel--light .chip--pend { background: rgba(0,120,160,0.12); color: #00708F; }
+.chip--live  { background: color-mix(in srgb, var(--flux) 18%, transparent);  color: var(--flux); }
+.chip--ok    { background: color-mix(in srgb, var(--field) 20%, transparent); color: var(--field); }
+.chip--pend  { background: color-mix(in srgb, var(--volt) 20%, transparent);  color: var(--volt); }
+.panel--light .chip--ok,
+.panel--light .chip--pend { color: color-mix(in srgb, var(--field) 45%, var(--ink)); }
+.panel--light .chip--live { color: color-mix(in srgb, var(--flux) 45%, var(--ink)); }
 
 .mock-bars { display: flex; align-items: flex-end; gap: 6px; height: 84px; padding-top: 0.5rem; }
 .mock-bars i {
@@ -712,6 +718,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 .stat__v { margin-top: 0.75rem; font-size: 0.9375rem; color: var(--on-dark-muted); }
 .panel--light .stat__v { color: var(--on-light-muted); }
+.panel--light .stat__k { color: color-mix(in srgb, var(--accent, var(--flux)) 45%, var(--ink)); }
 
 /* ---------- 14. Steps ---------- */
 .steps { display: grid; gap: clamp(1.5rem, 3vw, 2.5rem); counter-reset: step; }
@@ -855,7 +862,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   width: 60vw; height: 60vw;
   max-width: 700px; max-height: 700px;
   right: -10vw; top: -20vw;
-  background: radial-gradient(circle, var(--glow, rgba(255,90,31,0.22)), transparent 62%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent, var(--flux)) 26%, transparent), transparent 62%);
   filter: blur(30px);
   pointer-events: none;
 }
@@ -891,6 +898,8 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .card h3 { font-size: 1.25rem; }
 .card p { font-size: 0.9375rem; color: var(--on-dark-muted); }
 .panel--light .card p { color: var(--on-light-muted); }
+.panel--light .card__icon,
+.panel--light .num { color: color-mix(in srgb, var(--accent, var(--flux)) 45%, var(--ink)); }
 
 /* ---------- 20. Accordion ---------- */
 .accordion { border-top: 1px solid var(--rule-dark); }
@@ -918,6 +927,8 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   transition: transform 0.4s var(--ease);
 }
 .acc__icon::before { inset: 7px 0; height: 2px; }
+.panel--light .acc__icon::before,
+.panel--light .acc__icon::after { background: color-mix(in srgb, var(--accent, var(--flux)) 45%, var(--ink)); }
 .acc__icon::after  { inset: 0 7px; width: 2px; }
 .acc__btn[aria-expanded="true"] .acc__icon::after { transform: scaleY(0); }
 .acc__panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.45s var(--ease); }
@@ -979,4 +990,85 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .sec-head { grid-template-columns: 1fr; align-items: start; }
   .hero__foot { grid-template-columns: 1fr; }
   .hero__scroll { display: none; }
+}
+
+/* ---------- 24. Broadcast "program out" preview ---------- */
+.screen {
+  aspect-ratio: 16 / 9;
+  position: relative;
+  background: linear-gradient(160deg, #16181d, #0c0d10);
+  display: flex;
+  align-items: flex-end;
+  padding: 4%;
+  overflow: hidden;
+}
+.screen__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(245,243,239,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245,243,239,.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.screen__score {
+  position: absolute;
+  top: 5%;
+  left: 4%;
+  display: flex;
+  align-items: stretch;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(0.65rem, 1.4vw, 1rem);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 12px 34px -14px #000;
+}
+.screen__score > span { padding: 0.45em 0.75em; white-space: nowrap; }
+.s-team     { background: var(--ink);   color: var(--on-dark); }
+.s-team--alt{ background: var(--ink-3); }
+.s-num      { background: var(--volt);  color: var(--ink); }
+.s-num--alt { background: rgba(245,243,239,.14); color: var(--on-dark); }
+.s-clock    { background: var(--ink); color: var(--volt); font-family: var(--font-mono); font-size: 0.82em; letter-spacing: 0.04em; }
+
+.screen__bug {
+  position: absolute;
+  top: 5%;
+  right: 4%;
+  background: rgba(11,11,12,.82);
+  border: 1px solid color-mix(in srgb, var(--volt) 42%, transparent);
+  border-radius: 4px;
+  padding: 0.5em 0.8em;
+  font-family: var(--font-mono);
+  font-size: clamp(0.5rem, 1vw, 0.7rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--volt);
+}
+
+.screen__lower { position: relative; width: min(72%, 520px); }
+.screen__rule  { height: 5px; width: 100%; background: var(--volt); }
+.screen__card  { background: rgba(11,11,12,.9); padding: 1em 1.2em; }
+.screen__title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  font-size: clamp(0.9rem, 2vw, 1.7rem);
+  line-height: 1;
+}
+.screen__sponsor {
+  font-family: var(--font-mono);
+  font-size: clamp(0.5rem, 1vw, 0.7rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--volt);
+  margin-top: 0.5em;
+}
+
+/* Numbered label reused by cards (About beliefs, Consulting engagements) */
+.num {
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.18em;
+  color: var(--accent, var(--flux));
 }

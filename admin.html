@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Flux Athletics — Site admin</title>
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="assets/fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+
+<header class="bar">
+  <span class="bar__brand">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M16 5h20l-4 8H12z" fill="#0DF786"/><path d="M12 16h20l-4 8H8z" fill="#F5F3EF" opacity=".85"/><path d="M8 27h20l-4 8H4z" fill="#F5F3EF" opacity=".45"/></svg>
+    Site admin
+  </span>
+  <span class="bar__tag">Flux Athletics</span>
+  <span class="bar__spacer"></span>
+  <span class="bar__state" id="state">Loading…</span>
+  <button class="btn" id="btn-import">Import</button>
+  <button class="btn" id="btn-download">Download JSON</button>
+  <button class="btn" id="btn-revert">Discard changes</button>
+  <button class="btn btn--primary" id="btn-publish">Publish</button>
+</header>
+
+<div class="wrap">
+  <nav class="side" id="side" aria-label="Sections"></nav>
+
+  <main class="editor" id="editor">
+    <h1 class="editor__title" id="ed-title">Loading…</h1>
+    <p class="editor__sub" id="ed-sub"></p>
+    <div id="fields"></div>
+  </main>
+
+  <aside class="preview">
+    <div class="preview__bar">
+      <label for="prev-page">Preview</label>
+      <select id="prev-page">
+        <option value="index.html">Home</option>
+        <option value="command-center.html">Command Center</option>
+        <option value="broadcasters-toolkit.html">Broadcaster&rsquo;s Toolkit</option>
+        <option value="consulting.html">Consulting</option>
+        <option value="about.html">About</option>
+        <option value="contact.html">Contact</option>
+        <option value="404.html">404</option>
+      </select>
+      <span class="preview__widths">
+        <button type="button" data-w="desktop" aria-pressed="true">Desktop</button>
+        <button type="button" data-w="mobile" aria-pressed="false">Mobile</button>
+      </span>
+    </div>
+    <div class="preview__stage" id="stage">
+      <iframe class="preview__frame" id="frame" title="Live preview"></iframe>
+    </div>
+  </aside>
+</div>
+
+<dialog id="dlg-publish">
+  <form method="dialog">
+    <div class="dlg__h">Publish to GitHub</div>
+    <div class="dlg__b">
+      <p style="margin:0;font-size:13px;color:var(--a-muted)">
+        This writes <code>content.json</code> and all regenerated pages to
+        <b id="dlg-repo"></b> in a single commit. Your host redeploys from there.
+      </p>
+
+      <div class="f">
+        <label for="gh-token">GitHub token</label>
+        <input type="password" id="gh-token" placeholder="github_pat_…" autocomplete="off" spellcheck="false">
+        <p class="f__hint">
+          Create a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">fine-grained token</a>
+          scoped to <b>only this repository</b>, with <b>Contents: Read and write</b>. Nothing else.
+        </p>
+      </div>
+
+      <label style="display:flex;gap:.5rem;align-items:flex-start;font-size:12.5px;color:var(--a-muted)">
+        <input type="checkbox" id="gh-remember" style="margin-top:.2rem">
+        <span>Remember this token in this browser</span>
+      </label>
+
+      <div class="note">
+        <b>Before you tick that:</b> this page is publicly reachable on your live
+        site, and a saved token sits in this browser&rsquo;s storage. Only save it on a
+        machine that is yours alone, and revoke the token in GitHub if you ever
+        lose the device. Leaving it unticked means pasting the token each time,
+        which is the safer default.
+      </div>
+
+      <div class="f">
+        <label for="gh-message">Commit message</label>
+        <input type="text" id="gh-message" value="Update site content">
+      </div>
+
+      <div class="log" id="gh-log" hidden></div>
+    </div>
+    <div class="dlg__f">
+      <button class="btn" value="cancel">Cancel</button>
+      <button class="btn btn--primary" id="gh-go" type="button">Publish</button>
+    </div>
+  </form>
+</dialog>
+
+<input type="file" id="file-import" accept="application/json,.json" hidden>
+<div class="toast" id="toast"></div>
+
+<script src="tools/templates.js"></script>
+<script src="assets/js/admin.js"></script>
+</body>
+</html>

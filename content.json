@@ -1,0 +1,774 @@
+{
+  "site": {
+    "name": "Flux Athletics",
+    "wordmarkBold": "Flux",
+    "wordmarkLight": "Athletics",
+    "domain": "https://www.fluxathletics.com",
+    "email": "hello@fluxathletics.com",
+    "ctaLabel": "Book a call"
+  },
+  "brand": {
+    "primary": "#0DF786",
+    "support": "#889165",
+    "ink": "#0B0B0C",
+    "paper": "#F5F3EF"
+  },
+  "repo": {
+    "owner": "jlflux",
+    "name": "fluxathletics",
+    "branch": "claude/zen-tesla-ip0fxb"
+  },
+  "nav": [
+    {
+      "label": "Command Center",
+      "href": "command-center.html",
+      "num": "01"
+    },
+    {
+      "label": "Broadcaster’s Toolkit",
+      "href": "broadcasters-toolkit.html",
+      "num": "02"
+    },
+    {
+      "label": "Consulting",
+      "href": "consulting.html",
+      "num": "03"
+    },
+    {
+      "label": "About",
+      "href": "about.html",
+      "num": "04"
+    },
+    {
+      "label": "Contact",
+      "href": "contact.html",
+      "num": "05"
+    }
+  ],
+  "footer": {
+    "word": "Software, signal & strategy for sports.",
+    "columns": [
+      {
+        "title": "What we do",
+        "links": [
+          {
+            "label": "Athletics Command Center",
+            "href": "command-center.html"
+          },
+          {
+            "label": "Broadcaster’s Toolkit",
+            "href": "broadcasters-toolkit.html"
+          },
+          {
+            "label": "Consulting",
+            "href": "consulting.html"
+          }
+        ]
+      },
+      {
+        "title": "Company",
+        "links": [
+          {
+            "label": "About",
+            "href": "about.html"
+          },
+          {
+            "label": "Contact",
+            "href": "contact.html"
+          }
+        ]
+      }
+    ],
+    "legal": "All rights reserved."
+  },
+  "home": {
+    "meta": {
+      "title": "Flux Athletics — Software, broadcast tools & consulting for sports",
+      "description": "Flux Athletics builds the Athletics Command Center for sponsorship and event logistics, the Broadcaster’s Toolkit for live sports graphics, and offers sports marketing, media and event management consulting."
+    },
+    "hero": {
+      "eyebrow": "Software · Broadcast tools · Consulting",
+      "titleLines": [
+        "Game day,",
+        "under",
+        "control."
+      ],
+      "lead": "We build the software, broadcast tools and strategy that keep athletic departments and live productions running — from the sponsorship contract to the graphic on screen.",
+      "buttons": [
+        {
+          "label": "Explore the platform",
+          "href": "command-center.html",
+          "style": "primary"
+        },
+        {
+          "label": "See the Toolkit",
+          "href": "broadcasters-toolkit.html",
+          "style": "ghost"
+        }
+      ]
+    },
+    "marquee": [
+      "Sponsorship fulfillment",
+      "Event staffing",
+      "Game day logistics",
+      "Live graphics",
+      "Broadcast plugins",
+      "Sports marketing",
+      "Media strategy",
+      "Venue operations"
+    ],
+    "whatWeDo": {
+      "eyebrow": "What we do",
+      "heading": "Three ways we\ntake work off\nyour plate.",
+      "lead": "Most athletic operations are held together by spreadsheets, group texts and the one person who knows how everything works. We replace that with systems — and the people who know how to run them."
+    },
+    "pillars": [
+      {
+        "theme": "primary",
+        "num": "01 / Software",
+        "title": "Athletics",
+        "titleAccent": "Command Center",
+        "body": "One system for the logistics behind a season: sponsorship inventory and fulfillment, event staffing, schedules, vendors and venues. Built for athletic departments that run dozens of events at once.",
+        "list": [
+          "Sponsorship inventory & proof of performance",
+          "Event staffing & shift assignment",
+          "Game day run-of-show and logistics"
+        ],
+        "linkLabel": "Explore the platform",
+        "linkHref": "command-center.html"
+      },
+      {
+        "theme": "support",
+        "num": "02 / Broadcast",
+        "title": "Broadcaster’s",
+        "titleAccent": "Toolkit",
+        "body": "Plugins and graphics packages for live sports production. Scoreboards, lower thirds, sponsor billboards and stat pages that look broadcast-grade without a broadcast-sized crew.",
+        "list": [
+          "Animated graphics packages",
+          "Scoreboard & clock integrations",
+          "Sponsor rotation & as-run logging"
+        ],
+        "linkLabel": "See what’s inside",
+        "linkHref": "broadcasters-toolkit.html"
+      },
+      {
+        "theme": "support",
+        "num": "03 / Advisory",
+        "title": "Sports",
+        "titleAccent": "Consulting",
+        "body": "Marketing, media and event management strategy from people who have actually run the event. We help you price inventory, plan the operation and build the crew to deliver it.",
+        "list": [
+          "Sponsorship strategy & valuation",
+          "Event management & staffing plans",
+          "Media & broadcast strategy"
+        ],
+        "linkLabel": "How we work",
+        "linkHref": "consulting.html"
+      }
+    ],
+    "commandCenterSplit": {
+      "eyebrow": "01 — Athletics Command Center",
+      "heading": "Every obligation,\nevery shift,\none screen.",
+      "lead": "Sponsorship deals live in contracts. Staffing lives in a group chat. Run-of-show lives in someone’s head. The Command Center puts all three in the same place, so nothing gets missed on a Saturday with four events running at once.",
+      "button": {
+        "label": "Explore the platform",
+        "href": "command-center.html"
+      },
+      "mockLabel": "Command Center — Saturday",
+      "mockRows": [
+        {
+          "title": "Video board takeover — Q2 media timeout",
+          "meta": "Sponsor obligation · 2 of 3 delivered",
+          "chip": "On air",
+          "chipStyle": "live"
+        },
+        {
+          "title": "Gate staff — North concourse",
+          "meta": "14 of 14 shifts assigned",
+          "chip": "Staffed",
+          "chipStyle": "ok"
+        },
+        {
+          "title": "Concourse activation — setup",
+          "meta": "Vendor load-in · 90 min window",
+          "chip": "Pending",
+          "chipStyle": "pend"
+        }
+      ]
+    },
+    "toolkitSplit": {
+      "eyebrow": "02 — Broadcaster’s Toolkit",
+      "heading": "Broadcast-grade\ngraphics. Two-person\ncrew.",
+      "lead": "The gap between a network show and a campus stream is rarely the camera — it’s the graphics. Our plugins and packages drop into the production tools you already run and make a small crew look like a big one.",
+      "button": {
+        "label": "See what’s inside",
+        "href": "broadcasters-toolkit.html"
+      },
+      "mockLabel": "Program out · 1080p59.94",
+      "scoreboard": {
+        "home": "HOME",
+        "homeScore": "24",
+        "away": "AWAY",
+        "awayScore": "17",
+        "clock": "Q3 04:12"
+      },
+      "lowerThird": {
+        "title": "Third quarter leaders",
+        "sponsor": "Presented by your sponsor"
+      }
+    },
+    "consultingSection": {
+      "eyebrow": "03 — Consulting",
+      "heading": "Strategy from\npeople who have\nworked the event.",
+      "lead": "Software solves the repeatable problems. The rest — what an asset is worth, how a venue should flow, which partner is right — takes judgment. That is the part we do in the room with you.",
+      "cards": [
+        {
+          "title": "Sports marketing",
+          "body": "Inventory audits, sponsorship valuation, partner strategy and renewal packages built on what you can actually deliver and prove."
+        },
+        {
+          "title": "Media & broadcast",
+          "body": "Production planning, rights and distribution strategy, graphics standards, and workflow design for the crew size you really have."
+        },
+        {
+          "title": "Event management",
+          "body": "Run-of-show, staffing models, vendor coordination and venue logistics — planned in advance and documented so it survives turnover."
+        }
+      ],
+      "button": {
+        "label": "See the engagements",
+        "href": "consulting.html"
+      }
+    },
+    "howWeWork": {
+      "eyebrow": "How we work",
+      "heading": "Simple on purpose.",
+      "items": [
+        {
+          "title": "Audit",
+          "body": "We map what you sell, what you staff and what you broadcast — then show you where obligations are slipping and where hours are being burned."
+        },
+        {
+          "title": "Install",
+          "body": "Command Center is configured around your sports, venues and season. Toolkit graphics are built to your brand and loaded into your production stack."
+        },
+        {
+          "title": "Run it",
+          "body": "We stay on through your first events, train the staff who will own it, and leave you with a system that does not depend on any one person."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Let’s get your season under control.",
+      "body": "Tell us what you run — a department, a conference, a broadcast crew — and we’ll show you the shortest path to a cleaner operation.",
+      "label": "Start the conversation"
+    }
+  },
+  "commandCenter": {
+    "meta": {
+      "title": "Athletics Command Center — Sponsorship & event logistics software | Flux Athletics",
+      "description": "The Athletics Command Center gives athletic departments one system for sponsorship inventory and fulfillment, event staffing, run-of-show and game day logistics."
+    },
+    "hero": {
+      "crumb": "Command Center",
+      "eyebrow": "Athletics Command Center",
+      "title": "The operating system for your season.",
+      "lead": "Sponsorship obligations, event staffing and game day logistics in one place — so an athletic department running forty events a month can see all of them at once.",
+      "buttons": [
+        {
+          "label": "Request a walkthrough",
+          "href": "contact.html",
+          "style": "primary"
+        },
+        {
+          "label": "What’s inside",
+          "href": "#modules",
+          "style": "ghost"
+        }
+      ]
+    },
+    "stats": [
+      {
+        "k": "One",
+        "v": "Shared source of truth for sponsorship, staffing and logistics — instead of three systems that disagree."
+      },
+      {
+        "k": "Every",
+        "v": "Contracted obligation tracked to a date, an event and a person responsible for delivering it."
+      },
+      {
+        "k": "Season",
+        "v": "Long records that survive staff turnover, so next year’s team starts from what worked."
+      }
+    ],
+    "problem": {
+      "eyebrow": "The problem",
+      "heading": "The work is not hard. Keeping track of it is.",
+      "lead": "A single home football Saturday can carry a hundred contracted obligations, a hundred and fifty staff shifts and a dozen vendors on load-in windows that overlap. None of it is complicated on its own. All of it at once, across every sport, in spreadsheets and texts, is how things get missed.",
+      "items": [
+        {
+          "title": "Obligations slip quietly",
+          "body": "A missed PA read or video board spot rarely gets noticed until a partner asks for a recap at renewal time."
+        },
+        {
+          "title": "Staffing runs on memory",
+          "body": "Who works which gate, who confirmed, who no-showed last time — usually known by one person, stored nowhere."
+        },
+        {
+          "title": "Nothing carries forward",
+          "body": "When a coordinator leaves, the run-of-show and the vendor relationships tend to leave with them."
+        }
+      ]
+    },
+    "modules": {
+      "eyebrow": "Modules",
+      "heading": "What’s inside.",
+      "lead": "Start with the piece that hurts most. Add the rest when you are ready — everything shares the same calendar, the same venues and the same people.",
+      "items": [
+        {
+          "title": "Sponsorship inventory",
+          "body": "Every asset you sell — signage, PA reads, video board, digital, hospitality — catalogued once, with its own availability, rate and owner."
+        },
+        {
+          "title": "Obligation tracking",
+          "body": "Contracts become a checklist of deliverables mapped to specific dates and events, so a missed read is caught the same week, not at renewal."
+        },
+        {
+          "title": "Proof of performance",
+          "body": "Capture the evidence as it happens — timestamps, photos, as-run logs — and generate the recap a partner will actually renew against."
+        },
+        {
+          "title": "Event staffing",
+          "body": "Build shift templates per sport and venue, publish openings, assign crews, and track who confirmed, who checked in and who is short."
+        },
+        {
+          "title": "Run of show",
+          "body": "One shared timeline per event: load-in, rehearsal, promos, activations, media timeouts. Everyone works from the same document, live."
+        },
+        {
+          "title": "Vendors & venues",
+          "body": "Keep vendor contacts, load-in windows, access requirements and venue-specific rules attached to the event instead of buried in email."
+        },
+        {
+          "title": "Multi-sport scheduling",
+          "body": "See the whole athletic calendar at once — overlapping events, shared staff, shared spaces — and catch conflicts before they are a Saturday problem."
+        },
+        {
+          "title": "Reporting",
+          "body": "Season-level views of fulfillment rate, staffing coverage and cost, ready to hand to a director, a partner or a board."
+        }
+      ]
+    },
+    "steps": {
+      "eyebrow": "Getting started",
+      "heading": "From audit to first event.",
+      "items": [
+        {
+          "title": "Audit",
+          "body": "We inventory what you sell and what you staff, and identify where obligations are currently being tracked — or not."
+        },
+        {
+          "title": "Configure",
+          "body": "Your sports, venues, shift templates and partner contracts are loaded in, so the system reflects how your department actually operates."
+        },
+        {
+          "title": "Run a live event",
+          "body": "We are on site or on call for your first events, training the staff who will own it day to day."
+        }
+      ]
+    },
+    "faq": {
+      "eyebrow": "Questions",
+      "heading": "Before you ask.",
+      "items": [
+        {
+          "q": "Who is the Command Center built for?",
+          "a": "Athletic departments, conferences and venue operators who run a lot of events with a small full-time staff — the operations, marketing and external relations side rather than compliance or academics."
+        },
+        {
+          "q": "Do we have to move everything at once?",
+          "a": "No. Most groups start with one problem — usually sponsorship fulfillment or event staffing — get a season under their belt, then expand. The system is designed to be useful on day one with a single module in use."
+        },
+        {
+          "q": "Can it work alongside our ticketing and CRM systems?",
+          "a": "Yes. The Command Center is built to sit on the operations layer, not replace your ticketing or donor systems. We will map the handoffs during implementation."
+        },
+        {
+          "q": "How long does implementation take?",
+          "a": "It depends on how many sports and venues you run and how much of your inventory is already documented. We scope that in the audit before anyone signs anything."
+        },
+        {
+          "q": "What happens when our staff turns over?",
+          "a": "That is a large part of the point. Templates, run-of-show documents and fulfillment records stay with the department rather than leaving with the person who built them."
+        }
+      ]
+    },
+    "cta": {
+      "title": "See it against your own season.",
+      "body": "Send us a real weekend from your calendar and we will walk you through how the Command Center would have handled it.",
+      "label": "Request a walkthrough"
+    }
+  },
+  "toolkit": {
+    "meta": {
+      "title": "Broadcaster's Toolkit — Live sports graphics & plugins | Flux Athletics",
+      "description": "The Broadcaster's Toolkit from Flux Athletics: score bugs, lower thirds, sponsor billboards, stat pages and plugins that make a small live sports crew look broadcast-grade."
+    },
+    "hero": {
+      "crumb": "Broadcaster’s Toolkit",
+      "eyebrow": "Broadcaster’s Toolkit",
+      "title": "Make a small crew look like a network.",
+      "lead": "Plugins and graphics packages for live sports production. Built for the people running a show with two cameras, one operator and no margin for error.",
+      "buttons": [
+        {
+          "label": "Get the Toolkit",
+          "href": "contact.html",
+          "style": "primary"
+        },
+        {
+          "label": "What’s included",
+          "href": "#kit",
+          "style": "ghost"
+        }
+      ]
+    },
+    "preview": {
+      "mockLabel": "Program out · 1080p59.94",
+      "scoreboard": {
+        "home": "HOME",
+        "homeScore": "24",
+        "away": "AWAY",
+        "awayScore": "17",
+        "clock": "Q3 04:12"
+      },
+      "sponsorBug": "Sponsor bug · rotating",
+      "lowerThird": {
+        "title": "Third quarter leaders",
+        "sponsor": "Presented by your partner"
+      },
+      "caption": "Representative layout. Every package is rebuilt in your colours, type and naming."
+    },
+    "marquee": [
+      "Score bugs",
+      "Lower thirds",
+      "Sponsor billboards",
+      "Stat pages",
+      "Transitions",
+      "Tickers",
+      "Show opens"
+    ],
+    "kit": {
+      "eyebrow": "The kit",
+      "heading": "Everything a\nsports show\nneeds on screen.",
+      "lead": "Not a folder of loose templates. A designed package where the score bug, the lower third and the sponsor read all share the same rules — and an operator can drive the whole thing alone.",
+      "items": [
+        {
+          "title": "Scoreboard & clock bugs",
+          "body": "Score bugs that read from your clock and scoring source, styled to your brand, with the states a real game needs — timeouts, period breaks, overtime, final."
+        },
+        {
+          "title": "Lower thirds",
+          "body": "Name keys, stat cards, matchup comparisons and interview keys built as a set, so every insert in your show looks like it belongs to the same package."
+        },
+        {
+          "title": "Sponsor billboards",
+          "body": "Full-frame and corner-bug sponsor elements with rotation logic, plus an as-run log you can hand back to the partner as proof."
+        },
+        {
+          "title": "Stat pages",
+          "body": "Leaders, box scores, team comparisons and season lines — populated from your data source rather than retyped between whistles."
+        },
+        {
+          "title": "Transitions & stings",
+          "body": "Wipes, bumpers and open animations cut to your package so a stream returning from break feels produced instead of abrupt."
+        },
+        {
+          "title": "Ticker & social",
+          "body": "Scrolling scores, promotional messaging and moderated social pulls for the bottom of the frame."
+        }
+      ]
+    },
+    "compat": {
+      "eyebrow": "Fits your stack",
+      "heading": "Built for the tools you already run.",
+      "lead": "We deliver into the switcher and CG workflow your crew knows, rather than asking you to rebuild the truck around a new piece of software. Tell us what you run and we will confirm the delivery format before you commit.",
+      "button": {
+        "label": "Check your setup",
+        "href": "contact.html"
+      },
+      "note": "CONFIRM this list matches what Flux Athletics actually supports today.",
+      "items": [
+        {
+          "title": "Software switchers",
+          "body": "Packages delivered for common software production stacks, driven by title inputs your operator already understands."
+        },
+        {
+          "title": "Browser-based overlays",
+          "body": "HTML overlay sources that key over program in any tool that accepts a browser input — and update live from your data."
+        },
+        {
+          "title": "Scoring & stat feeds",
+          "body": "Wired to your clock, scoring console or stat provider so the numbers on screen are not being typed by hand."
+        },
+        {
+          "title": "Operator control",
+          "body": "A simple control surface for the person running graphics, built so a student operator can be trained in an afternoon."
+        }
+      ]
+    },
+    "steps": {
+      "eyebrow": "How it ships",
+      "heading": "Three steps to air.",
+      "items": [
+        {
+          "title": "Brand it",
+          "body": "We take your marks, colours and type and build the package around them — including the sponsor treatments your partners have already bought."
+        },
+        {
+          "title": "Wire it",
+          "body": "Graphics are connected to your clock, scoring and stat sources, and installed into your production stack ahead of a live date."
+        },
+        {
+          "title": "Train it",
+          "body": "We run a rehearsal with the crew who will operate it, then stay reachable for your first broadcasts of the season."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Tell us what your show looks like.",
+      "body": "Send us your stack, your sports and a link to a recent broadcast. We will come back with what the Toolkit would change.",
+      "label": "Get the Toolkit"
+    }
+  },
+  "consulting": {
+    "meta": {
+      "title": "Consulting — Sports marketing, media & event management | Flux Athletics",
+      "description": "Flux Athletics consulting: sponsorship strategy and valuation, media and broadcast strategy, event management, staffing models and marketing for athletic departments and rights holders."
+    },
+    "hero": {
+      "crumb": "Consulting",
+      "eyebrow": "Consulting",
+      "title": "Advice from inside the operation.",
+      "lead": "Sports marketing, media and event management consulting for athletic departments, rights holders and properties — from people who build the software and work the events.",
+      "buttons": [
+        {
+          "label": "Start a conversation",
+          "href": "contact.html",
+          "style": "primary"
+        },
+        {
+          "label": "What we advise on",
+          "href": "#practices",
+          "style": "ghost"
+        }
+      ]
+    },
+    "why": {
+      "eyebrow": "Why us",
+      "heading": "We do not hand you a deck and leave.",
+      "lead": "Most strategy work in this industry stops at the recommendation. Ours does not, because we also build the tools that carry it out. When we tell you an inventory should be repackaged or a staffing model should change, we can show you the system that makes it hold up over a full season — and we are there when it goes live."
+    },
+    "practices": {
+      "eyebrow": "Practice areas",
+      "heading": "What we\nadvise on.",
+      "lead": "Engagements usually start in one of these and grow into the next. We are happy to be brought in for a single question.",
+      "items": [
+        {
+          "title": "Sponsorship strategy & valuation",
+          "body": "What your inventory is actually worth, what is being under-sold, and how to package it so renewals are a conversation about results rather than rate cards."
+        },
+        {
+          "title": "Partner activation",
+          "body": "Turning a signed deal into something a fan notices — activation concepts your venue and staff can genuinely execute on a game day."
+        },
+        {
+          "title": "Media & broadcast strategy",
+          "body": "Production standards, rights and distribution decisions, and a realistic plan for the number of shows you want to put out this season."
+        },
+        {
+          "title": "Event management",
+          "body": "Run-of-show design, vendor coordination, venue flow and contingency planning for events from a home doubleheader to a championship weekend."
+        },
+        {
+          "title": "Staffing models",
+          "body": "How many people you need, in which roles, at what cost — plus the training and documentation that keeps it working after turnover."
+        },
+        {
+          "title": "Brand & marketing",
+          "body": "Positioning, creative direction and campaign planning for departments, events and properties that need to sell tickets and partnerships."
+        }
+      ]
+    },
+    "engagements": {
+      "eyebrow": "Engagements",
+      "heading": "Three ways\nto work\ntogether.",
+      "lead": "Scope and fees are set after a first conversation, because the right shape depends on whether you need an answer, a plan or a pair of hands.",
+      "items": [
+        {
+          "num": "01 / Short",
+          "title": "The audit",
+          "body": "A fixed-scope review of your sponsorship inventory, event operation or broadcast workflow, ending in a written set of findings and a prioritised list of what to fix first."
+        },
+        {
+          "num": "02 / Project",
+          "title": "The build",
+          "body": "We design the thing and stand it up with you — a new partnership package, an event plan, a staffing model, a production standard — through to its first live use."
+        },
+        {
+          "num": "03 / Ongoing",
+          "title": "The season",
+          "body": "Retained advisory across a competition year: planning ahead of each window, on-call through event weeks, and a review when the season closes."
+        }
+      ]
+    },
+    "process": {
+      "eyebrow": "Process",
+      "heading": "How an engagement runs.",
+      "items": [
+        {
+          "title": "Listen",
+          "body": "A working session with the people who actually run it — not just the people who sign the contract."
+        },
+        {
+          "title": "Recommend",
+          "body": "Findings written plainly, ordered by what will change the most for the least disruption to your calendar."
+        },
+        {
+          "title": "Implement",
+          "body": "We stay through execution, whether that means standing up the Command Center, rebuilding a package, or working the event with you."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Bring us the problem you keep postponing.",
+      "body": "A first conversation costs nothing and usually ends with a clear idea of whether we are the right people for it.",
+      "label": "Start a conversation"
+    }
+  },
+  "about": {
+    "meta": {
+      "title": "About — Flux Athletics",
+      "description": "Flux Athletics builds software, broadcast tools and strategy for the operations, partnerships and production side of sports."
+    },
+    "hero": {
+      "crumb": "About",
+      "eyebrow": "About",
+      "title": "We build for the people in the back of house.",
+      "lead": "Flux Athletics makes software, broadcast tools and strategy for the side of sports the crowd never sees — the operations, partnerships and production work that decides whether an event actually lands."
+    },
+    "intro": {
+      "eyebrow": "The company",
+      "heading": "One company,\nthree fronts.",
+      "paragraphs": [
+        "We started from a simple observation: the same athletic department that cannot prove a sponsor read happened is also the one asking a student operator to run graphics for a conference broadcast. Those are not separate problems. They are the same shortage of time, people and systems.",
+        "So we work on all three: the Athletics Command Center for the logistics, the Broadcaster’s Toolkit for what goes on screen, and consulting for the decisions no software can make for you."
+      ]
+    },
+    "beliefs": {
+      "eyebrow": "What we believe",
+      "heading": "Four things\nwe keep\ncoming back to.",
+      "items": [
+        {
+          "title": "Operations is the product",
+          "body": "The scoreboard is the visible part. What decides whether a season goes well is whether the load-in window held and the read got made."
+        },
+        {
+          "title": "Tools should fit the crew you have",
+          "body": "Nobody in college athletics is getting a bigger staff next year. Everything we build assumes fewer people, not more."
+        },
+        {
+          "title": "Prove it or do not sell it",
+          "body": "A sponsorship is worth what you can demonstrate you delivered. We build for evidence, because renewals are won with it."
+        },
+        {
+          "title": "Simple beats complete",
+          "body": "A system people actually use on a Saturday is worth more than a comprehensive one they abandon by October."
+        }
+      ]
+    },
+    "team": {
+      "note": "EDIT ME — replace with your real founding story, background and team. Anything specific (years in the industry, events worked, clients, headcount) should be written by you so it is accurate.",
+      "eyebrow": "Who you work with",
+      "heading": "Small team. Direct line.",
+      "lead": "You will not be handed to an account manager. The people who scope the work are the people who do it, and you will have their number during your event weeks.",
+      "button": {
+        "label": "Talk to us",
+        "href": "contact.html"
+      },
+      "stats": [
+        {
+          "k": "Built by operators",
+          "v": "Product decisions come from event weeks, not from a roadmap meeting."
+        },
+        {
+          "k": "On site when it counts",
+          "v": "We are reachable through your first live events, every time."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Come tell us what your Saturdays look like.",
+      "body": "The best first conversation is a plain description of one event week — what goes right, and what you are always chasing.",
+      "label": "Start the conversation"
+    }
+  },
+  "contact": {
+    "meta": {
+      "title": "Contact — Flux Athletics",
+      "description": "Get in touch with Flux Athletics about the Athletics Command Center, the Broadcaster’s Toolkit, or sports marketing, media and event management consulting."
+    },
+    "hero": {
+      "crumb": "Contact",
+      "eyebrow": "Contact",
+      "title": "Let’s talk.",
+      "lead": "Tell us what you run and what is breaking. We reply to everything within one business day."
+    },
+    "form": {
+      "action": "",
+      "submitLabel": "Send it",
+      "interests": [
+        "Athletics Command Center",
+        "Broadcaster’s Toolkit",
+        "Consulting",
+        "Something else"
+      ],
+      "messageLabel": "What are you working on?",
+      "messagePlaceholder": "Sports you run, venues, crew size, and the part that keeps going wrong."
+    },
+    "details": {
+      "expectTitle": "What to expect",
+      "expect": "A reply within one business day, and a 30-minute call if it looks like a fit. No deck, no pitch — we would rather hear how your operation actually runs.",
+      "includeTitle": "Good things to include",
+      "include": [
+        "Sports and venues you cover",
+        "How many events in a typical month",
+        "Your production stack, if broadcast is involved",
+        "When your season starts"
+      ]
+    }
+  },
+  "notFound": {
+    "meta": {
+      "title": "Page not found — Flux Athletics",
+      "description": "That page could not be found."
+    },
+    "eyebrow": "Error 404",
+    "titleLines": [
+      "Off the",
+      "field."
+    ],
+    "lead": "That page does not exist — or it moved. Here is the way back.",
+    "buttons": [
+      {
+        "label": "Back to home",
+        "href": "index.html",
+        "style": "primary"
+      },
+      {
+        "label": "Contact us",
+        "href": "contact.html",
+        "style": "ghost"
+      }
+    ]
+  }
+}

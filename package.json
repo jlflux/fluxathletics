@@ -9,8 +9,5 @@
     "og": "node tools/og.js",
     "fonts": "node tools/fetch-fonts.js",
     "shots": "node tools/shots.js"
-  },
-  "devDependencies": {
-    "playwright": "^1.63.0"
   }
 }
