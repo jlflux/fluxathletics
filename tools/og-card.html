@@ -1,0 +1,44 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../assets/css/fonts.css">
+<style>
+  * { margin:0; box-sizing:border-box; }
+  body { width:1200px; height:630px; background:#0B0B0C; color:#F5F3EF; overflow:hidden;
+         font-family:'Inter',sans-serif; position:relative; }
+  .grid { position:absolute; inset:0;
+          background-image:linear-gradient(rgba(245,243,239,.07) 1px,transparent 1px),
+                           linear-gradient(90deg,rgba(245,243,239,.07) 1px,transparent 1px);
+          background-size:100px 100px;
+          -webkit-mask-image:radial-gradient(ellipse 80% 80% at 40% 45%,#000 25%,transparent 75%); }
+  .glow { position:absolute; width:760px; height:760px; right:-180px; top:-260px; border-radius:50%;
+          background:radial-gradient(circle,rgba(255,90,31,.40),transparent 62%); filter:blur(20px); }
+  .glow2 { position:absolute; width:620px; height:620px; left:-220px; bottom:-320px; border-radius:50%;
+           background:radial-gradient(circle,rgba(61,225,255,.22),transparent 62%); filter:blur(20px); }
+  .in { position:relative; height:100%; padding:78px 84px; display:flex; flex-direction:column; justify-content:space-between; }
+  .brand { display:flex; align-items:center; gap:16px; }
+  .brand svg { width:44px; height:44px; }
+  .brand b { font-family:'Archivo'; font-weight:800; font-size:26px; text-transform:uppercase; letter-spacing:-.01em; }
+  .brand b span { font-weight:500; opacity:.55; }
+  h1 { font-family:'Archivo'; font-weight:800; font-size:118px; line-height:.88; letter-spacing:-.045em;
+       text-transform:uppercase; max-width:15ch; }
+  .foot { display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+          border-top:1px solid rgba(245,243,239,.16); padding-top:30px; }
+  .tag { font-family:'Archivo'; font-weight:800; font-size:19px; letter-spacing:.06em; text-transform:uppercase; }
+  .dot { width:7px; height:7px; border-radius:50%; background:#FF5A1F; }
+  .dot.v { background:#3DE1FF; } .dot.f { background:#B8FF3C; }
+</style>
+<body>
+  <div class="grid"></div><div class="glow"></div><div class="glow2"></div>
+  <div class="in">
+    <div class="brand">
+      <svg viewBox="0 0 40 40"><path d="M16 5h20l-4 8H12z" fill="#FF5A1F"/><path d="M12 16h20l-4 8H8z" fill="#F5F3EF" opacity=".85"/><path d="M8 27h20l-4 8H4z" fill="#F5F3EF" opacity=".45"/></svg>
+      <b>Flux <span>Athletics</span></b>
+    </div>
+    <h1>Game day,<br>under control.</h1>
+    <div class="foot">
+      <span class="dot"></span><span class="tag">Athletics Command Center</span>
+      <span class="dot v"></span><span class="tag">Broadcaster&rsquo;s Toolkit</span>
+      <span class="dot f"></span><span class="tag">Consulting</span>
+    </div>
+  </div>
+</body>

@@ -1,0 +1,16 @@
+{
+  "name": "fluxathletics",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Flux Athletics marketing site — static HTML, no build step required.",
+  "scripts": {
+    "build": "node tools/build.js",
+    "serve": "node tools/serve.js",
+    "og": "node tools/og.js",
+    "fonts": "node tools/fetch-fonts.js",
+    "shots": "node tools/shots.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}
