@@ -669,12 +669,12 @@
       "heading": "Four things\nwe keep\ncoming back to",
       "items": [
         {
-          "title": "Operations is the product",
-          "body": "The game is the visible part. What decides whether a season goes well is whether the load-in window held and the read got made."
+          "title": "Operations",
+          "body": "The game is the visible part. For most athletic departments, winning on the field is only part of the equation for what makes a successful season."
         },
         {
-          "title": "Tools should fit the crew you have",
-          "body": "Nobody in college athletics is getting a bigger staff next year. Everything we build assumes fewer people, not more."
+          "title": "Tools to fit the crew you have",
+          "body": "Nobody has the amount of staff members they want. Everything we build assumes fewer people, not more."
         },
         {
           "title": "Prove it or do not sell it",
@@ -682,13 +682,13 @@
         },
         {
           "title": "Simple beats complete",
-          "body": "A system people actually use on a Saturday is worth more than a comprehensive one they abandon by October."
+          "body": "A system people actually use every day is work more than a complicated one they abandon within a few months."
         }
       ]
     },
     "team": {
       "note": "EDIT ME — replace with your real founding story, background and team. Anything specific (years in the industry, events worked, clients, headcount) should be written by you so it is accurate.",
-      "eyebrow": "Who you work with",
+      "eyebrow": "Who we work with",
       "heading": "Small team. Direct line.",
       "lead": "You will not be handed to an account manager. The people who scope the work are the people who do it, and you will have their number during your event weeks.",
       "button": {
@@ -697,12 +697,12 @@
       },
       "stats": [
         {
-          "k": "Built by operators",
-          "v": "Product decisions come from event weeks, not from a roadmap meeting."
+          "k": "Built by athletic departments",
+          "v": "Our team comes from the front lines of athletic departments and use our own tools to help manage daily life"
         },
         {
-          "k": "On site when it counts",
-          "v": "We are reachable through your first live events, every time."
+          "k": "Available when it counts",
+          "v": "Games happen outside of work hours, so we are reachable during your live events"
         }
       ]
     },
