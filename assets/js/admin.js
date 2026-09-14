@@ -620,7 +620,12 @@
       if (state.server && !state.server.configured) {
         $('#missing-vars').textContent =
           ' A publish server is deployed but these environment variables are not set: ' +
-          state.server.missing.join(', ') + '. Set them on your host and redeploy to sign in with a password instead of a token. See the README.';
+          state.server.missing.join(', ') + '. ' + (state.server.hint || '') +
+          ' (The function can currently see ' +
+          (state.server.diagnostics && state.server.diagnostics.envVarsVisible >= 0
+            ? state.server.diagnostics.envVarsVisible
+            : 'an unknown number of') +
+          ' environment variables.) See the README.';
       }
       if (panel === 'token') {
         var r2 = state.content.repo || {};

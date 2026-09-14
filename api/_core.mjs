@@ -198,7 +198,8 @@ function configured(env) {
     env.GITHUB_OWNER && env.GITHUB_REPO);
 }
 
-export async function handle(request, env) {
+export async function handle(request, env, meta) {
+  const diag = meta || {};
   const url = new URL(request.url);
   const route = url.pathname.replace(/^\/api\/?/, '').replace(/\/+$/, '');
 
@@ -208,6 +209,26 @@ export async function handle(request, env) {
     : false;
 
   if (route === 'session') {
+    const required = ['ADMIN_PASSWORD', 'SESSION_SECRET', 'GITHUB_TOKEN', 'GITHUB_OWNER', 'GITHUB_REPO'];
+    const missing = isConfigured ? [] : required.filter(k => !env[k]);
+
+    /* "All five missing" looks the same whether they were never set or the
+       runtime cannot see them at all — so say which it is. */
+    let hint = '';
+    if (missing.length === required.length) {
+      if (diag.totalEnvKeys === 0) {
+        hint = 'This function cannot see any environment variables at all, which points at the runtime rather than your settings.';
+      } else if (diag.totalEnvKeys > 0) {
+        hint = 'This function can see ' + diag.totalEnvKeys + ' environment variables, but none of the five it needs. ' +
+          'Check the names for typos, that they were added to the environment you are visiting (Production vs Preview), ' +
+          'and that you redeployed afterwards — environment changes only apply to new deployments.';
+      } else {
+        hint = 'Set them on your host and redeploy — environment changes only apply to new deployments.';
+      }
+    } else if (missing.length) {
+      hint = 'Set the remaining variables and redeploy.';
+    }
+
     return json({
       mode: 'server',
       configured: isConfigured,
@@ -215,7 +236,10 @@ export async function handle(request, env) {
       repo: isConfigured
         ? { owner: env.GITHUB_OWNER, name: env.GITHUB_REPO, branch: env.GITHUB_BRANCH || 'main' }
         : null,
-      missing: isConfigured ? [] : ['ADMIN_PASSWORD', 'SESSION_SECRET', 'GITHUB_TOKEN', 'GITHUB_OWNER', 'GITHUB_REPO'].filter(k => !env[k]),
+      missing,
+      hint,
+      /* Counts and names only — never values. */
+      diagnostics: { envVarsVisible: diag.totalEnvKeys, envSource: diag.source || 'unknown' },
     });
   }
 

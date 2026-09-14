@@ -20,6 +20,7 @@ const TYPES = {
 /* Bridge Node's req/res to the Web-standard handler in api/_core.mjs. */
 async function serveApi(req, res) {
   const { handle } = await import('../api/_core.mjs');
+  const { readEnv } = await import('../api/_env.mjs');
   const chunks = [];
   for await (const c of req) chunks.push(c);
   const body = chunks.length ? Buffer.concat(chunks) : undefined;
@@ -30,7 +31,8 @@ async function serveApi(req, res) {
     body: (req.method === 'GET' || req.method === 'HEAD') ? undefined : body,
   });
 
-  const out = await handle(request, process.env);
+  const { env, meta } = readEnv();
+  const out = await handle(request, env, meta);
   const headers = {};
   out.headers.forEach((v, k) => { headers[k] = v; });
   res.writeHead(out.status, headers);

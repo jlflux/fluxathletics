@@ -111,6 +111,29 @@ cannot read it. It lasts 14 days; changing `SESSION_SECRET` signs you out
 everywhere. The API refuses to write any path outside a fixed allowlist of site
 files, so a stolen session still cannot push arbitrary code into the repo.
 
+#### If the admin says "not configured"
+
+Open `https://yoursite/api/session` directly. It returns JSON that tells you
+which of the two problems you have:
+
+```json
+{ "configured": false,
+  "missing": ["ADMIN_PASSWORD", "..."],
+  "hint": "...",
+  "diagnostics": { "envVarsVisible": 144, "envSource": "process.env" } }
+```
+
+- **`envVarsVisible` is 0** — the function cannot see any environment at all.
+  That is a runtime problem, not a settings problem.
+- **`envVarsVisible` is a healthy number but all five are missing** — they are
+  genuinely not set for the environment you are visiting. Check the names for
+  typos, check Production vs Preview, and **redeploy**: on both Vercel and
+  Cloudflare, environment changes only apply to deployments made after the
+  change.
+- **`missing` lists only some** — set the rest and redeploy.
+
+Values are never included in that response, only names and counts.
+
 #### Option B — paste a GitHub token
 
 The fallback when no publish server is set up. The admin detects this
