@@ -648,29 +648,29 @@
   "about": {
     "meta": {
       "title": "About — Flux Athletics",
-      "description": "Flux Athletics builds software, broadcast tools and strategy for the operations, partnerships and production side of sports."
+      "description": "Software and strategy for the sports operations"
     },
     "hero": {
       "crumb": "About",
       "eyebrow": "About",
-      "title": "We build for the people in the back of house.",
-      "lead": "Flux Athletics makes software, broadcast tools and strategy for the side of sports the crowd never sees — the operations, partnerships and production work that decides whether an event actually lands."
+      "title": "We build for the people off the field",
+      "lead": "Flux Athletics creates software, tools and strategy for the side of sports the crowd never sees - the operations, partnerships and production work that makes game day smooth."
     },
     "intro": {
       "eyebrow": "The company",
-      "heading": "One company,\nthree fronts.",
+      "heading": "One company,\nmultiple fronts.",
       "paragraphs": [
-        "We started from a simple observation: the same athletic department that cannot prove a sponsor read happened is also the one asking a student operator to run graphics for a conference broadcast. Those are not separate problems. They are the same shortage of time, people and systems.",
-        "So we work on all three: the Athletics Command Center for the logistics, the Broadcaster’s Toolkit for what goes on screen, and consulting for the decisions no software can make for you."
+        "We stared from a simple observation: most athletic departments are severely understaffed and typically rely on volunteers, students and parents to help make game day happen. ",
+        "So we continue to work tirelessly to create solutions, including our Athletics Command Center for sponsorship and gameday logistics, broadcast toolkits for those that can't be in the stadium or arena, and consulting for decisions that software can't make for you."
       ]
     },
     "beliefs": {
       "eyebrow": "What we believe",
-      "heading": "Four things\nwe keep\ncoming back to.",
+      "heading": "Four things\nwe keep\ncoming back to",
       "items": [
         {
           "title": "Operations is the product",
-          "body": "The scoreboard is the visible part. What decides whether a season goes well is whether the load-in window held and the read got made."
+          "body": "The game is the visible part. What decides whether a season goes well is whether the load-in window held and the read got made."
         },
         {
           "title": "Tools should fit the crew you have",
