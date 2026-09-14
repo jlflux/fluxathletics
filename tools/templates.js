@@ -19,7 +19,7 @@
 
   const ARROW = '<svg class="arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 7h11M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-  const MARK = (cls) => `<svg class="${cls || 'brand__mark'}" viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path class="b1" d="M16 5h20l-4 8H12z"/><path class="b2" d="M12 16h20l-4 8H8z"/><path class="b3" d="M8 27h20l-4 8H4z"/></svg>`;
+  const MARK = (cls) => `<svg class="${cls || 'brand__mark'}" viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path class="b1" d="M16 5h20l-4 8H12z"/><path class="b2" d="M12 16h20l-4 8H8z"/><path class="b3" d="M8 27h10l-4 8H4z"/></svg>`;
 
   const btn = (b, extra) => {
     const style = (b && b.style) || 'primary';
@@ -729,7 +729,7 @@ ${pageHero(p.hero, 'primary')}
   <rect width="40" height="40" rx="9" fill="${attr(b.ink || '#0B0B0C')}"/>
   <path d="M16 8h17l-3.4 6.8H12.6z" fill="${attr(b.primary || '#0DF786')}"/>
   <path d="M12.6 17.4h17l-3.4 6.8H9.2z" fill="${attr(b.paper || '#F5F3EF')}" opacity=".85"/>
-  <path d="M9.2 26.8h17l-3.4 6.8H5.8z" fill="${attr(b.paper || '#F5F3EF')}" opacity=".45"/>
+  <path d="M9.2 26.8h8.5l-3.4 6.8H5.8z" fill="${attr(b.paper || '#F5F3EF')}" opacity=".45"/>
 </svg>
 `;
   }

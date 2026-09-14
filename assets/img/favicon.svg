@@ -2,5 +2,5 @@
   <rect width="40" height="40" rx="9" fill="#0B0B0C"/>
   <path d="M16 8h17l-3.4 6.8H12.6z" fill="#0DF786"/>
   <path d="M12.6 17.4h17l-3.4 6.8H9.2z" fill="#F5F3EF" opacity=".85"/>
-  <path d="M9.2 26.8h17l-3.4 6.8H5.8z" fill="#F5F3EF" opacity=".45"/>
+  <path d="M9.2 26.8h8.5l-3.4 6.8H5.8z" fill="#F5F3EF" opacity=".45"/>
 </svg>
