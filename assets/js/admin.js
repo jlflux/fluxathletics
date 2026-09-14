@@ -225,8 +225,11 @@
     return 'Item ' + (i + 1);
   }
 
+  var shapeMemory = {};
+
   function listEditor(parent, key, path) {
     var arr = parent[key];
+    if (arr.length && typeof arr[0] === 'object') shapeMemory[path] = blankLike(arr[0]);
     var simple = arr.length === 0 || typeof arr[0] === 'string';
     var box = el('div', { class: 'list' + (simple ? ' list--simple' : '') });
 
@@ -275,7 +278,7 @@
     box.appendChild(el('button', {
       class: 'btn btn--sm list__add', type: 'button', text: '+ Add ' + labelFor(key).toLowerCase().replace(/s$/, ''),
       onclick: function () {
-        arr.push(arr.length ? blankLike(arr[0]) : '');
+        arr.push(arr.length ? blankLike(arr[0]) : (shapeMemory[path] ? blankLike(shapeMemory[path]) : ''));
         markChanged(true);
       }
     }));
@@ -376,14 +379,28 @@
   /* The preview pane is far narrower than a desktop viewport, so render the
      iframe at a real desktop width and scale it down to fit. Without this,
      "Desktop" would just be showing the mobile breakpoint. */
+  var MAX_FRAME_PX = 12000;
+
   function fitPreview() {
     var stage = $('#stage');
     var frame = $('#frame');
     if (!stage || !frame) return;
+
+    /* Hidden (narrow layouts) means zero width — scaling by 0 would blank the
+       iframe and poison the height. Leave the last good values alone. */
+    var avail = stage.clientWidth;
+    if (!avail) return;
+
     var target = stage.classList.contains('is-mobile') ? 390 : 1280;
-    var scale = Math.min(1, stage.clientWidth / target);
+    var scale = Math.min(1, avail / target);
+    if (!isFinite(scale) || scale <= 0) scale = 1;
+
+    var height = stage.clientHeight / scale;
+    if (!isFinite(height) || height <= 0) height = stage.clientHeight || 600;
+    height = Math.min(height, MAX_FRAME_PX);
+
     frame.style.width = target + 'px';
-    frame.style.height = (stage.clientHeight / scale) + 'px';
+    frame.style.height = height + 'px';
     frame.style.transform = 'scale(' + scale + ')';
   }
 

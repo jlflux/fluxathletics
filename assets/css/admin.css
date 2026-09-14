@@ -96,7 +96,14 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .editor__title { font-size: 20px; font-weight: 700; letter-spacing: -.02em; margin: 0 0 .35rem; }
 .editor__sub { color: var(--a-muted); font-size: 13px; margin: 0 0 1.5rem; max-width: 60ch; }
 
-.preview { border-left: 1px solid var(--a-line); display: flex; flex-direction: column; background: var(--a-panel); }
+.preview {
+  border-left: 1px solid var(--a-line);
+  display: flex;
+  flex-direction: column;
+  background: var(--a-panel);
+  min-height: 0;   /* bound to the grid row, not to the iframe's height */
+  overflow: hidden;
+}
 .preview__bar {
   display: flex; align-items: center; gap: .5rem; padding: .5rem .75rem;
   border-bottom: 1px solid var(--a-line);
@@ -110,7 +117,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .preview__widths { display: flex; gap: .25rem; margin-left: auto; }
 .preview__widths button { background: none; border: 1px solid var(--a-line); border-radius: 5px; padding: .15rem .4rem; font-size: 10px; font-family: var(--a-mono); color: var(--a-faint); }
 .preview__widths button[aria-pressed="true"] { color: var(--a-accent); border-color: var(--a-accent); }
-.preview__stage { flex: 1; overflow: hidden; background: #050506; position: relative; }
+.preview__stage {
+  flex: 1;
+  min-height: 0;   /* without this the stage grows to fit the scaled iframe */
+  overflow: hidden;
+  background: #050506;
+  position: relative;
+}
 .preview__stage.is-mobile { display: flex; justify-content: center; }
 
 /* ---------- fields ---------- */
