@@ -548,8 +548,8 @@
     "hero": {
       "crumb": "Consulting",
       "eyebrow": "Consulting",
-      "title": "Advice from inside the operation.",
-      "lead": "Sports marketing, media and event management consulting for athletic departments, rights holders and properties — from people who build the software and work the events.",
+      "title": "Advice from inside the operation",
+      "lead": "Sports marketing, media and event management consulting for athletic departments, rights holders and media properties - from people who have sat where you are now.",
       "buttons": [
         {
           "label": "Start a conversation",
@@ -565,13 +565,13 @@
     },
     "why": {
       "eyebrow": "Why us",
-      "heading": "We do not hand you a deck and leave.",
-      "lead": "Most strategy work in this industry stops at the recommendation. Ours does not, because we also build the tools that carry it out. When we tell you an inventory should be repackaged or a staffing model should change, we can show you the system that makes it hold up over a full season — and we are there when it goes live."
+      "heading": "We do not hand you a deck and leave",
+      "lead": "Most strategy work in this industry stops at the recommendation. Ours does not, because we also build the tools that carry it out. When we tell you inventory should be repackaged or a staffing model should change, we can show you the system that makes it hold up over a full season - and we are there when it goes live."
     },
     "practices": {
       "eyebrow": "Practice areas",
-      "heading": "What we\nadvise on.",
-      "lead": "Engagements usually start in one of these and grow into the next. We are happy to be brought in for a single question.",
+      "heading": "What we\nadvise on",
+      "lead": "Engagements usually start in one of these areas and grow into the next. We are happy to be brought in for even a single question.",
       "items": [
         {
           "title": "Sponsorship strategy & valuation",
