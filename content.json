@@ -673,12 +673,12 @@
           "body": "The game is the visible part. For most athletic departments, winning on the field is only part of the equation for what makes a successful season."
         },
         {
-          "title": "Tools to fit the crew you have",
-          "body": "Nobody has the amount of staff members they want. Everything we build assumes fewer people, not more."
+          "title": "Tools should fit the crew you have",
+          "body": "Nobody has an adequately sized staff. Everything we build assumes fewer people, not more."
         },
         {
           "title": "Prove it or do not sell it",
-          "body": "A sponsorship is worth what you can demonstrate you delivered. We build for evidence, because renewals are won with it."
+          "body": "A sponsorship is worth what you can demonstrate you deliver. We build for evidence because renewals are won with it."
         },
         {
           "title": "Simple beats complete",
@@ -690,7 +690,7 @@
       "note": "EDIT ME — replace with your real founding story, background and team. Anything specific (years in the industry, events worked, clients, headcount) should be written by you so it is accurate.",
       "eyebrow": "Who we work with",
       "heading": "Small team. Direct line.",
-      "lead": "You will not be handed to an account manager. The people who scope the work are the people who do it, and you will have their number during your event weeks.",
+      "lead": "You aren't handed to an account manager. The people who scope the work are the people who do it, and you will have direct contact during event weeks.",
       "button": {
         "label": "Talk to us",
         "href": "contact.html"
@@ -707,8 +707,8 @@
       ]
     },
     "cta": {
-      "title": "Come tell us what your Saturdays look like.",
-      "body": "The best first conversation is a plain description of one event week — what goes right, and what you are always chasing.",
+      "title": "Tell us what your gamedays look like",
+      "body": "The best first conversation is a plain description of one event week - what goes right, and what you are always chasing.",
       "label": "Start the conversation"
     }
   },
