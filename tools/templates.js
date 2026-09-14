@@ -262,6 +262,42 @@ ${brandTokens(c.brand)}
       </div>`;
   };
 
+  /* Real broadcast stills. Until any are uploaded, the drawn mock stands in —
+     clearly captioned as representative so it is never mistaken for a real show. */
+  const gallerySection = (g, preview) => {
+    const items = list(g && g.items);
+    if (!items.length) {
+      return `<section class="section section--tight" style="--accent: var(--volt)">
+  <div class="shell">
+    ${broadcastMock(preview, { wide: true })}
+    <p class="muted" style="text-align:center;font-size:var(--fs-small);margin-top:1.25rem" data-reveal>${esc((g && g.emptyNote) || preview.caption)}</p>
+  </div>
+</section>
+`;
+    }
+    return `<section class="section" id="on-air" style="--accent: var(--volt)">
+  <div class="shell">
+    <div class="sec-head">
+      <div data-reveal>
+        <p class="eyebrow">${esc(g.eyebrow)}</p>
+        <h2 class="h2">${br(g.heading)}</h2>
+      </div>
+      <p class="lead" data-reveal>${esc(g.lead)}</p>
+    </div>
+
+    <div class="gallery">
+      ${items.map((it, i) => `<figure class="shot" data-reveal>
+        <button class="shot__btn" type="button" data-shot="${i}" aria-label="Enlarge image${it.caption ? ': ' + attr(it.caption) : ''}">
+          <img src="${attr(it.src)}" alt="${attr(it.alt || it.caption || '')}" loading="lazy" decoding="async">
+        </button>
+        ${it.caption ? `<figcaption>${esc(it.caption)}</figcaption>` : ''}
+      </figure>`).join('\n      ')}
+    </div>
+  </div>
+</section>
+`;
+  };
+
   /* ---------- pages ---------- */
   function home(c) {
     const p = c.home;
@@ -474,13 +510,7 @@ ${ctaBand(c, p.cta)}
     const p = c.toolkit;
     const body = `
 ${pageHero(p.hero, 'support')}
-<section class="section section--tight" style="--accent: var(--volt)">
-  <div class="shell">
-    ${broadcastMock(p.preview, { wide: true })}
-    <p class="muted" style="text-align:center;font-size:var(--fs-small);margin-top:1.25rem" data-reveal>${esc(p.preview.caption)}</p>
-  </div>
-</section>
-
+${gallerySection(p.gallery, p.preview)}
 ${marquee(p.marquee)}
 <section class="section" id="kit" style="--accent: var(--volt)">
   <div class="shell">

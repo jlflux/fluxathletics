@@ -47,6 +47,7 @@ to `npm run build`.
 | `contact.html` | Contact — form and details |
 | `404.html` | Not found |
 | `admin.html` | Content editor (see below) |
+| `broadcast/preview.html` | Working prototype of the broadcast graphics package |
 
 `robots.txt` and `sitemap.xml` are generated too, so the domain only has to be
 set in one place.
@@ -68,6 +69,22 @@ that file automatically becomes editable — no admin code to update.
 **What it does not change:** page structure and styling. Reordering whole
 sections or changing how a section looks is a code edit in
 `tools/templates.js` / `assets/css/styles.css`.
+
+### Adding broadcast photos
+
+The Broadcaster's Toolkit page has an **On-air photos** section. Until you add
+any, it falls back to the drawn mock, captioned as representative so nobody
+mistakes it for a real show.
+
+In the admin: **Broadcaster's Toolkit → On-air photos → Items → Add**, then
+**Upload image**. Pictures are resized to 1600px wide and compressed in the
+browser before upload, so shooting straight from your phone at the venue is
+fine. They commit alongside your text on the next Publish.
+
+Give each one alt text — it is what screen readers and search engines read.
+
+Removing a photo from the list stops it appearing, but leaves the file in
+`assets/img/gallery/`. Delete it there if you want it gone for good.
 
 ### Features
 

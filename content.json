@@ -448,6 +448,13 @@
       },
       "caption": "Representative layout. Every package is rebuilt in your colours, type and naming."
     },
+    "gallery": {
+      "eyebrow": "On air",
+      "heading": "Real shows,\nreal crews.",
+      "lead": "Screens and behind-the-scenes from broadcasts we have built for. Add your own in the admin — upload straight from your phone at the venue.",
+      "emptyNote": "Representative layout. Every package is rebuilt in your colours, type and naming.",
+      "items": []
+    },
     "marquee": [
       "Score bugs",
       "Lower thirds",

@@ -15,9 +15,12 @@ const content = JSON.parse(fs.readFileSync(path.join(ROOT, 'content.json'), 'utf
 
 /* Guard: an empty list or blank string almost always means a mis-keyed edit in
    content.json, which would silently render a section with nothing in it. */
+/* Lists that are legitimately empty until the owner fills them in. */
+const MAY_BE_EMPTY = new Set(['toolkit.gallery.items']);
+
 function validate(node, path, problems) {
   if (Array.isArray(node)) {
-    if (node.length === 0) problems.push(path + ' is an empty list');
+    if (node.length === 0 && !MAY_BE_EMPTY.has(path)) problems.push(path + ' is an empty list');
     node.forEach((v, i) => validate(v, path + '[' + i + ']', problems));
   } else if (node && typeof node === 'object') {
     for (const [k, v] of Object.entries(node)) validate(v, path ? path + '.' + k : k, problems);

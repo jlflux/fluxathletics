@@ -27,8 +27,20 @@ const ALLOWED_PATHS = new Set([
   'content.json',
 ]);
 
-const MAX_FILE_BYTES = 1024 * 1024;   // 1 MB per file
-const MAX_FILES = 25;
+/* Gallery photos, written by the admin's image uploader. Kept deliberately
+   tight: a fixed folder, a safe filename, and image extensions only. */
+const GALLERY_RE = /^assets\/img\/gallery\/[a-z0-9][a-z0-9._-]{0,60}\.(jpg|jpeg|png|webp)$/;
+
+const MAX_FILE_BYTES = 2 * 1024 * 1024;   // 2 MB per file
+const MAX_FILES = 40;
+
+const pathAllowed = (p) => ALLOWED_PATHS.has(p) || GALLERY_RE.test(p);
+
+/* An entry is either a plain string (text) or { encoding:'base64', content }. */
+function entryBytes(entry) {
+  if (typeof entry === 'string') return enc.encode(entry).length;
+  return Math.floor(String(entry.content || '').length * 0.75);
+}
 
 const enc = new TextEncoder();
 const dec = new TextDecoder();
@@ -166,11 +178,11 @@ async function commitFiles(env, files, message) {
   const baseCommit = await gh(env, base + '/git/commits/' + baseSha);
 
   const tree = [];
-  for (const [path, content] of Object.entries(files)) {
-    const blob = await gh(env, base + '/git/blobs', {
-      method: 'POST',
-      body: JSON.stringify({ content: b64utf8(content), encoding: 'base64' }),
-    });
+  for (const [path, entry] of Object.entries(files)) {
+    const body = (entry && typeof entry === 'object' && entry.encoding === 'base64')
+      ? { content: entry.content, encoding: 'base64' }
+      : { content: b64utf8(entry), encoding: 'base64' };
+    const blob = await gh(env, base + '/git/blobs', { method: 'POST', body: JSON.stringify(body) });
     tree.push({ path, mode: '100644', type: 'blob', sha: blob.sha });
   }
 
@@ -279,15 +291,27 @@ export async function handle(request, env, meta) {
     if (paths.length > MAX_FILES) return json({ error: 'Too many files.' }, 400);
 
     for (const p of paths) {
-      if (!ALLOWED_PATHS.has(p)) return json({ error: 'Refusing to write ' + p }, 400);
-      if (typeof files[p] !== 'string') return json({ error: 'Bad content for ' + p }, 400);
-      if (enc.encode(files[p]).length > MAX_FILE_BYTES) return json({ error: p + ' is too large.' }, 400);
+      if (!pathAllowed(p)) return json({ error: 'Refusing to write ' + p }, 400);
+      const entry = files[p];
+      const isText = typeof entry === 'string';
+      const isBinary = entry && typeof entry === 'object' &&
+        entry.encoding === 'base64' && typeof entry.content === 'string';
+      if (!isText && !isBinary) return json({ error: 'Bad content for ' + p }, 400);
+      if (isBinary && !GALLERY_RE.test(p)) {
+        return json({ error: 'Only gallery images may be sent as binary: ' + p }, 400);
+      }
+      if (isBinary && !/^[A-Za-z0-9+/]+={0,2}$/.test(entry.content)) {
+        return json({ error: 'Malformed image data for ' + p }, 400);
+      }
+      if (entryBytes(entry) > MAX_FILE_BYTES) return json({ error: p + ' is too large.' }, 400);
     }
 
-    try {
-      JSON.parse(files['content.json'] || '{}');
-    } catch (e) {
-      return json({ error: 'content.json is not valid JSON.' }, 400);
+    if (typeof files['content.json'] === 'string') {
+      try {
+        JSON.parse(files['content.json']);
+      } catch (e) {
+        return json({ error: 'content.json is not valid JSON.' }, 400);
+      }
     }
 
     try {

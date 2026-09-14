@@ -68,7 +68,17 @@
     home_: '', clock: 'Clock', away: 'Away label', awayScore: 'Away score',
     homeScore: 'Home score', sponsor: 'Sponsor line', linkLabel: 'Link text',
     linkHref: 'Link target',
+    gallery: 'On-air photos', src: 'Image', alt: 'Alt text (describes the image for screen readers)',
+    caption: 'Caption', emptyNote: 'Note shown while there are no photos yet',
   };
+
+  /* Lists that can start empty need a known item shape to add into. */
+  var DEFAULT_SHAPES = {
+    'toolkit.gallery.items': { src: '', alt: '', caption: '' },
+  };
+
+  /* path -> { dataUrl, base64 } for images chosen but not yet published. */
+  var pendingUploads = {};
 
   var SECTION_ORDER = ['site', 'brand', 'nav', 'home', 'commandCenter', 'toolkit',
     'consulting', 'about', 'contact', 'notFound', 'footer', 'repo'];
@@ -108,6 +118,7 @@
   }
 
   function typeFor(key, value, path) {
+    if (key === 'src') return 'image';
     if (SELECTS[key]) return 'select';
     if (path.indexOf('brand.') === 0) return 'color';
     if (key === 'href' || key === 'action' || key === 'domain' || key === 'linkHref') return 'url';
@@ -177,6 +188,99 @@
   /* ------------------------------------------------------------------ *
    * Form building — driven by the shape of the data
    * ------------------------------------------------------------------ */
+  /* Phone photos are far larger than a web page needs, and the publish API caps
+     file size, so shrink to a sensible width before it ever leaves the browser. */
+  function resizeImage(file, maxW, quality) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onerror = function () { reject(new Error('Could not read that file.')); };
+      reader.onload = function () {
+        var im = new Image();
+        im.onerror = function () { reject(new Error('That does not look like an image.')); };
+        im.onload = function () {
+          var scale = Math.min(1, maxW / im.naturalWidth);
+          var w = Math.max(1, Math.round(im.naturalWidth * scale));
+          var h = Math.max(1, Math.round(im.naturalHeight * scale));
+          var cv = document.createElement('canvas');
+          cv.width = w; cv.height = h;
+          cv.getContext('2d').drawImage(im, 0, 0, w, h);
+          resolve({ dataUrl: cv.toDataURL('image/jpeg', quality), w: w, h: h });
+        };
+        im.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function slugify(name) {
+    return String(name || '').toLowerCase()
+      .replace(/\.[a-z0-9]+$/, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 40) || 'shot';
+  }
+
+  function imageControl(obj, key, id) {
+    var wrap = el('div', { class: 'imgfield' });
+    var thumb = el('div', { class: 'imgfield__thumb' });
+    var img = el('img', { alt: '' });
+    var empty = el('span', { class: 'imgfield__empty', text: 'No image yet' });
+    thumb.appendChild(img);
+    thumb.appendChild(empty);
+
+    var paint = function () {
+      var v = obj[key];
+      var shown = (pendingUploads[v] && pendingUploads[v].dataUrl) || v;
+      if (shown) { img.src = shown; img.hidden = false; empty.hidden = true; }
+      else { img.removeAttribute('src'); img.hidden = true; empty.hidden = false; }
+    };
+
+    var file = el('input', { type: 'file', accept: 'image/*', hidden: '' });
+    var status = el('p', { class: 'f__hint' });
+
+    file.addEventListener('change', function () {
+      var f = file.files && file.files[0];
+      file.value = '';
+      if (!f) return;
+      status.textContent = 'Processing…';
+      resizeImage(f, 1600, 0.85).then(function (out) {
+        var base64 = out.dataUrl.slice(out.dataUrl.indexOf(',') + 1);
+        var bytes = Math.round(base64.length * 0.75);
+        if (bytes > 1800000) {
+          status.textContent = 'That image is still too large after resizing. Try a smaller one.';
+          return;
+        }
+        var path = 'assets/img/gallery/' + slugify(f.name) + '-' + Date.now().toString(36) + '.jpg';
+        pendingUploads[path] = { dataUrl: out.dataUrl, base64: base64 };
+        obj[key] = path;
+        paint();
+        status.textContent = out.w + '×' + out.h + ' · ' + Math.round(bytes / 1024) + ' KB · publishes with your next Publish';
+        markChanged();
+      }).catch(function (err) {
+        status.textContent = err.message;
+      });
+    });
+
+    var pathInput = el('input', { type: 'text', id: id, value: obj[key] || '', placeholder: 'assets/img/gallery/…' });
+    pathInput.addEventListener('input', function () { obj[key] = pathInput.value; paint(); markChanged(); });
+
+    var row = el('div', { class: 'imgfield__row' }, [
+      el('button', { class: 'btn btn--sm', type: 'button', text: 'Upload image', onclick: function () { file.click(); } }),
+      el('button', {
+        class: 'btn btn--sm btn--danger', type: 'button', text: 'Clear',
+        onclick: function () { obj[key] = ''; pathInput.value = ''; paint(); status.textContent = ''; markChanged(); }
+      }),
+    ]);
+
+    wrap.appendChild(thumb);
+    wrap.appendChild(row);
+    wrap.appendChild(pathInput);
+    wrap.appendChild(status);
+    wrap.appendChild(file);
+    paint();
+    return wrap;
+  }
+
   function control(obj, key, path) {
     var value = obj[key];
     var type = typeFor(key, value, path);
@@ -185,6 +289,10 @@
     field.appendChild(el('label', { for: id, text: labelFor(key) }));
 
     var input;
+    if (type === 'image') {
+      field.appendChild(imageControl(obj, key, id));
+      return field;
+    }
     if (type === 'select') {
       input = el('select', { id: id });
       SELECTS[key].forEach(function (opt) {
@@ -278,7 +386,12 @@
     box.appendChild(el('button', {
       class: 'btn btn--sm list__add', type: 'button', text: '+ Add ' + labelFor(key).toLowerCase().replace(/s$/, ''),
       onclick: function () {
-        arr.push(arr.length ? blankLike(arr[0]) : (shapeMemory[path] ? blankLike(shapeMemory[path]) : ''));
+        arr.push(
+          arr.length ? blankLike(arr[0])
+          : shapeMemory[path] ? blankLike(shapeMemory[path])
+          : DEFAULT_SHAPES[path] ? blankLike(DEFAULT_SHAPES[path])
+          : ''
+        );
         markChanged(true);
       }
     }));
@@ -491,10 +604,11 @@
     var tree = [];
     for (var i = 0; i < paths.length; i++) {
       var p = paths[i];
-      var blob = await gh(token, base + '/git/blobs', {
-        method: 'POST',
-        body: JSON.stringify({ content: b64(files[p]), encoding: 'base64' }),
-      });
+      var entry = files[p];
+      var payload = (entry && typeof entry === 'object' && entry.encoding === 'base64')
+        ? { content: entry.content, encoding: 'base64' }      /* already binary */
+        : { content: b64(entry), encoding: 'base64' };        /* text -> base64 */
+      var blob = await gh(token, base + '/git/blobs', { method: 'POST', body: JSON.stringify(payload) });
       tree.push({ path: p, mode: '100644', type: 'blob', sha: blob.sha });
       ghLog('  blob ' + p);
     }
@@ -548,6 +662,14 @@
   function buildFiles() {
     var files = window.FluxTemplates.renderAll(state.content);
     files['content.json'] = JSON.stringify(state.content, null, 2) + '\n';
+    /* Only ship images still referenced by the content — clearing a photo and
+       publishing should not upload the file anyway. */
+    var used = JSON.stringify(state.content);
+    Object.keys(pendingUploads).forEach(function (path) {
+      if (used.indexOf(path) !== -1) {
+        files[path] = { encoding: 'base64', content: pendingUploads[path].base64 };
+      }
+    });
     return files;
   }
 

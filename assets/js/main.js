@@ -196,7 +196,70 @@
     });
   }
 
-  /* ---- 10. Current year ------------------------------------------------ */
+  /* ---- 10. Gallery lightbox -------------------------------------------- */
+  var shots = Array.prototype.slice.call(document.querySelectorAll('.shot__btn'));
+  if (shots.length) {
+    var box = document.createElement('div');
+    box.className = 'lightbox';
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-modal', 'true');
+    box.setAttribute('aria-label', 'Image viewer');
+    box.innerHTML =
+      '<button class="lightbox__close" type="button" aria-label="Close">\u2715</button>' +
+      '<button class="lightbox__nav lightbox__nav--prev" type="button" aria-label="Previous">\u2039</button>' +
+      '<button class="lightbox__nav lightbox__nav--next" type="button" aria-label="Next">\u203A</button>' +
+      '<figure class="lightbox__fig"><img alt=""><figcaption class="lightbox__cap"></figcaption></figure>';
+    document.body.appendChild(box);
+
+    var boxImg = box.querySelector('img');
+    var boxCap = box.querySelector('.lightbox__cap');
+    var index = 0;
+    var lastFocus = null;
+
+    var show = function (i) {
+      index = (i + shots.length) % shots.length;
+      var src = shots[index].querySelector('img');
+      boxImg.src = src.currentSrc || src.src;
+      boxImg.alt = src.alt || '';
+      var fig = shots[index].closest('.shot');
+      var cap = fig && fig.querySelector('figcaption');
+      boxCap.textContent = cap ? cap.textContent : '';
+      boxCap.hidden = !cap;
+    };
+    var open = function (i) {
+      lastFocus = document.activeElement;
+      show(i);
+      box.classList.add('is-open');
+      document.body.classList.add('nav-open');
+      box.querySelector('.lightbox__close').focus();
+    };
+    var close = function () {
+      box.classList.remove('is-open');
+      document.body.classList.remove('nav-open');
+      if (lastFocus) lastFocus.focus();
+    };
+
+    shots.forEach(function (btn, i) {
+      btn.addEventListener('click', function () { open(i); });
+    });
+    box.querySelector('.lightbox__close').addEventListener('click', close);
+    box.querySelector('.lightbox__nav--prev').addEventListener('click', function () { show(index - 1); });
+    box.querySelector('.lightbox__nav--next').addEventListener('click', function () { show(index + 1); });
+    box.addEventListener('click', function (e) { if (e.target === box) close(); });
+    document.addEventListener('keydown', function (e) {
+      if (!box.classList.contains('is-open')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') show(index - 1);
+      if (e.key === 'ArrowRight') show(index + 1);
+    });
+    /* A single image needs no paging. */
+    if (shots.length < 2) {
+      box.querySelector('.lightbox__nav--prev').hidden = true;
+      box.querySelector('.lightbox__nav--next').hidden = true;
+    }
+  }
+
+  /* ---- 11. Current year ------------------------------------------------ */
   document.querySelectorAll('[data-year]').forEach(function (el) {
     el.textContent = String(new Date().getFullYear());
   });
