@@ -566,12 +566,12 @@
     "why": {
       "eyebrow": "Why us",
       "heading": "We do not hand you a deck and leave",
-      "lead": "Most strategy work in this industry stops at the recommendation. Ours does not, because we also build the tools that carry it out. When we tell you inventory should be repackaged or a staffing model should change, we can show you the system that makes it hold up over a full season - and we are there when it goes live."
+      "lead": "Our strategy doesn't stop at a recommendation because we also build the tools that carry it out. When we tell you inventory should be repackaged or a staffing model should change, we can show you the system that makes it hold up over a full season - and we are there when it goes live."
     },
     "practices": {
       "eyebrow": "Practice areas",
       "heading": "What we\nadvise on",
-      "lead": "Engagements usually start in one of these areas and grow into the next. We are happy to be brought in for even a single question.",
+      "lead": "Engagements usually start in one of these areas and grow into the next. We are happy to be brought in, no matter how big or small the ask.",
       "items": [
         {
           "title": "Sponsorship strategy & valuation",
@@ -579,11 +579,11 @@
         },
         {
           "title": "Partner activation",
-          "body": "Turning a signed deal into something a fan notices — activation concepts your venue and staff can genuinely execute on a game day."
+          "body": "Turning a signed deal into something a fan notices! Create an activation concept that your venue and staff can genuinely execute on a game day."
         },
         {
           "title": "Media & broadcast strategy",
-          "body": "Production standards, rights and distribution decisions, and a realistic plan for the number of shows you want to put out this season."
+          "body": "Production standards, rights and distribution decisions, and a realistic plan for how you want to promote your season."
         },
         {
           "title": "Event management",
@@ -591,7 +591,7 @@
         },
         {
           "title": "Staffing models",
-          "body": "How many people you need, in which roles, at what cost — plus the training and documentation that keeps it working after turnover."
+          "body": "How many people you need, in which roles, and at what cost. Plus the training and documentation that keeps it working after turnover."
         },
         {
           "title": "Brand & marketing",
@@ -601,21 +601,21 @@
     },
     "engagements": {
       "eyebrow": "Engagements",
-      "heading": "Three ways\nto work\ntogether.",
+      "heading": "Three ways\nto work\ntogether",
       "lead": "Scope and fees are set after a first conversation, because the right shape depends on whether you need an answer, a plan or a pair of hands.",
       "items": [
         {
-          "num": "01 / Short",
+          "num": "Initial Work",
           "title": "The audit",
           "body": "A fixed-scope review of your sponsorship inventory, event operation or broadcast workflow, ending in a written set of findings and a prioritised list of what to fix first."
         },
         {
-          "num": "02 / Project",
+          "num": "The Project",
           "title": "The build",
-          "body": "We design the thing and stand it up with you — a new partnership package, an event plan, a staffing model, a production standard — through to its first live use."
+          "body": "We design everything and help create it with you - whether that's a new partnership package, an event plan, a staffing model, a production standard, or whatever it may be. From idea through to its first live use."
         },
         {
-          "num": "03 / Ongoing",
+          "num": "Ongoing",
           "title": "The season",
           "body": "Retained advisory across a competition year: planning ahead of each window, on-call through event weeks, and a review when the season closes."
         }
@@ -627,7 +627,7 @@
       "items": [
         {
           "title": "Listen",
-          "body": "A working session with the people who actually run it — not just the people who sign the contract."
+          "body": "A working session with the people who actually run your department"
         },
         {
           "title": "Recommend",
