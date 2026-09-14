@@ -81,26 +81,61 @@ sections or changing how a section looks is a code edit in
 
 ### Publishing setup
 
-Publish needs a GitHub token. Create a
-[fine-grained personal access token](https://github.com/settings/personal-access-tokens/new)
-scoped to **only this repository**, with **Contents: Read and write** and
-nothing else.
+There are two ways the admin can publish. **Set up the first one** — it is the
+reason you can edit from a phone.
 
-> **Read this before ticking "Remember this token".**
-> `admin.html` is a static file, so it is publicly reachable on your live
-> site — anyone who guesses the URL can open it. That on its own is harmless:
-> without a token it can only edit a local draft that goes nowhere. A
-> *remembered* token, though, sits in that browser's storage. Only save it on a
-> machine that is yours alone, and revoke the token in GitHub if you lose the
-> device. Leaving the box unticked and pasting the token each time is the safer
-> default.
->
-> If you want the page itself locked down, both Vercel and Cloudflare Pages can
-> password-protect a single path — worth doing if the site is public.
+#### Option A — password login (recommended)
 
-The publish target lives in `content.json` under `repo`
-(`owner` / `name` / `branch`), editable from the admin's **Publishing target**
-section. Point `branch` at whichever branch your host deploys.
+The GitHub token lives in a server environment variable and never touches your
+devices. You sign in with a password, from any browser anywhere.
+
+This needs the small API in `api/` to be deployed, which happens automatically
+on Vercel and Cloudflare Pages. Set these environment variables on your host
+(see `.env.example`), then redeploy:
+
+| Variable | What it is |
+|---|---|
+| `ADMIN_PASSWORD` | The password you type in the admin. Make it long and random. |
+| `SESSION_SECRET` | Signs the session cookie. Generate with `openssl rand -base64 32`. |
+| `GITHUB_TOKEN` | Fine-grained token, **Contents: Read and write** on this repo. |
+| `GITHUB_OWNER` | `jlflux` |
+| `GITHUB_REPO` | `fluxathletics` |
+| `GITHUB_BRANCH` | The branch your host deploys from. |
+
+**Verify after the first deploy:** open `https://yoursite/api/session`. It should
+return JSON with `"configured": true`. If you get the 404 page instead, the
+functions are not deploying — check that the `api/` directory was included.
+
+The session cookie is `HttpOnly`, `Secure` and `SameSite=Lax`, so page scripts
+cannot read it. It lasts 14 days; changing `SESSION_SECRET` signs you out
+everywhere. The API refuses to write any path outside a fixed allowlist of site
+files, so a stolen session still cannot push arbitrary code into the repo.
+
+#### Option B — paste a GitHub token
+
+The fallback when no publish server is set up. The admin detects this
+automatically and shows the token field instead.
+
+Create a [fine-grained token](https://github.com/settings/personal-access-tokens/new) with:
+
+- **Repository access** → *Only select repositories* → `fluxathletics`
+- **Permissions** → *Repository permissions* → **Contents: Read and write**
+
+> If publishing fails with **403 "Resource not accessible by personal access
+> token"**, the token can read but not write. The two usual causes are picking
+> *"Public repositories (read-only)"* under Repository access, or leaving
+> Contents on *Read-only*. Both must be set as above.
+
+> `admin.html` is a static file, so it is publicly reachable on your live site.
+> Without a token or password it can only edit a local draft that goes nowhere.
+> But a *remembered* token sits in that browser's storage — only tick that box
+> on a machine that is yours alone. Option A avoids the problem entirely.
+> Both Vercel and Cloudflare Pages can also password-protect the `/admin.html`
+> path if you want the page itself locked down.
+
+Nothing under the repo root is secret — `api/`, `tools/` and `content.json` are
+all readable on a static host by design. Every secret is an environment
+variable.
 
 ---
 
@@ -136,9 +171,11 @@ no build step. Running the build is still worth it — it guarantees the HTML ca
 never drift from `content.json`.
 
 - **Vercel** — `vercel.json` is already configured (build `node tools/build.js`,
-  output `.`, install skipped since there are no dependencies).
+  output `.`, install skipped since there are no dependencies). Functions in
+  `api/` deploy automatically.
 - **Cloudflare Pages** — build command `node tools/build.js`, output directory
-  `/`, no install command needed.
+  `/`, no install command needed. `functions/api/[[route]].js` wires the same
+  API up automatically.
 - **Netlify** — build `node tools/build.js`, publish directory `.`.
 - **GitHub Pages / any web server** — serve the repo root as-is.
 
@@ -146,6 +183,15 @@ never drift from `content.json`.
 
 ```bash
 npm run serve    # → http://localhost:8080
+```
+
+The dev server also serves `/api/*` through the same handler the hosts use, so
+you can exercise the login-and-publish flow locally:
+
+```bash
+ADMIN_PASSWORD='…' SESSION_SECRET='…' GITHUB_TOKEN='…' \
+GITHUB_OWNER=jlflux GITHUB_REPO=fluxathletics GITHUB_BRANCH=main \
+npm run serve
 ```
 
 ## Optional tooling

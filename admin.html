@@ -20,10 +20,12 @@
   <span class="bar__tag">Flux Athletics</span>
   <span class="bar__spacer"></span>
   <span class="bar__state" id="state">Loading…</span>
-  <button class="btn" id="btn-import">Import</button>
-  <button class="btn" id="btn-download">Download JSON</button>
-  <button class="btn" id="btn-revert">Discard changes</button>
-  <button class="btn btn--primary" id="btn-publish">Publish</button>
+  <div class="bar__actions">
+    <button class="btn" id="btn-import"><span class="t-long">Import</span><span class="t-short">Import</span></button>
+    <button class="btn" id="btn-download"><span class="t-long">Download JSON</span><span class="t-short">JSON</span></button>
+    <button class="btn" id="btn-revert"><span class="t-long">Discard changes</span><span class="t-short">Discard</span></button>
+    <button class="btn btn--primary" id="btn-publish">Publish</button>
+  </div>
 </header>
 
 <div class="wrap">
@@ -60,38 +62,70 @@
 
 <dialog id="dlg-publish">
   <form method="dialog">
-    <div class="dlg__h">Publish to GitHub</div>
+    <div class="dlg__h" id="dlg-title">Publish</div>
     <div class="dlg__b">
-      <p style="margin:0;font-size:13px;color:var(--a-muted)">
-        This writes <code>content.json</code> and all regenerated pages to
-        <b id="dlg-repo"></b> in a single commit. Your host redeploys from there.
-      </p>
 
-      <div class="f">
-        <label for="gh-token">GitHub token</label>
-        <input type="password" id="gh-token" placeholder="github_pat_…" autocomplete="off" spellcheck="false">
-        <p class="f__hint">
-          Create a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">fine-grained token</a>
-          scoped to <b>only this repository</b>, with <b>Contents: Read and write</b>. Nothing else.
+      <!-- Server mode, signed out -->
+      <div id="panel-login" hidden>
+        <p style="margin:0 0 1rem;font-size:13px;color:var(--a-muted)">
+          Sign in to publish to <b id="login-repo"></b>.
         </p>
+        <div class="f">
+          <label for="admin-password">Password</label>
+          <input type="password" id="admin-password" autocomplete="current-password" placeholder="••••••••••••">
+        </div>
       </div>
 
-      <label style="display:flex;gap:.5rem;align-items:flex-start;font-size:12.5px;color:var(--a-muted)">
-        <input type="checkbox" id="gh-remember" style="margin-top:.2rem">
-        <span>Remember this token in this browser</span>
-      </label>
-
-      <div class="note">
-        <b>Before you tick that:</b> this page is publicly reachable on your live
-        site, and a saved token sits in this browser&rsquo;s storage. Only save it on a
-        machine that is yours alone, and revoke the token in GitHub if you ever
-        lose the device. Leaving it unticked means pasting the token each time,
-        which is the safer default.
+      <!-- Server mode, signed in -->
+      <div id="panel-ready" hidden>
+        <p style="margin:0 0 1rem;font-size:13px;color:var(--a-muted)">
+          Publishing to <b id="ready-repo"></b>. Your host will redeploy automatically.
+        </p>
+        <div class="f">
+          <label for="gh-message">Commit message</label>
+          <input type="text" id="gh-message" value="Update site content">
+        </div>
+        <p style="margin:.75rem 0 0"><button class="btn btn--sm" type="button" id="btn-signout">Sign out</button></p>
       </div>
 
-      <div class="f">
-        <label for="gh-message">Commit message</label>
-        <input type="text" id="gh-message" value="Update site content">
+      <!-- No server API available: fall back to a pasted token -->
+      <div id="panel-token" hidden>
+        <p style="margin:0 0 1rem;font-size:13px;color:var(--a-muted)">
+          No publish server is set up, so this commits directly to
+          <b id="dlg-repo"></b> using a token you paste.
+        </p>
+        <div class="f">
+          <label for="gh-token">GitHub token</label>
+          <input type="password" id="gh-token" placeholder="github_pat_&hellip;" autocomplete="off" spellcheck="false">
+          <p class="f__hint">
+            A <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">fine-grained token</a>
+            with <b>Repository access &rarr; Only select repositories</b> (this one) and
+            <b>Permissions &rarr; Repository &rarr; Contents: Read and write</b>.
+            Picking &ldquo;Public repositories&rdquo; instead gives read-only access and publishing will fail with a 403.
+          </p>
+        </div>
+
+        <label style="display:flex;gap:.5rem;align-items:flex-start;font-size:12.5px;color:var(--a-muted);margin-bottom:1rem">
+          <input type="checkbox" id="gh-remember" style="margin-top:.2rem">
+          <span>Remember this token in this browser</span>
+        </label>
+
+        <div class="note">
+          <b>Before you tick that:</b> this page is publicly reachable on your live
+          site, and a saved token sits in this browser&rsquo;s storage. Only save it on a
+          machine that is yours alone. Setting up the publish server instead keeps
+          the token off your devices entirely &mdash; see the README.
+        </div>
+
+        <div class="f" style="margin-top:1rem">
+          <label for="gh-message-token">Commit message</label>
+          <input type="text" id="gh-message-token" value="Update site content">
+        </div>
+      </div>
+
+      <div class="note" id="panel-unconfigured" hidden>
+        <b>Publish server found, but not configured.</b>
+        <span id="missing-vars"></span>
       </div>
 
       <div class="log" id="gh-log" hidden></div>

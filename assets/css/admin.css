@@ -50,6 +50,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   color: var(--a-faint); border: 1px solid var(--a-line); border-radius: 99px; padding: .2rem .5rem;
 }
 .bar__spacer { flex: 1; }
+.bar__actions { display: flex; align-items: center; gap: .5rem; }
+.t-short { display: none; }
 .bar__state { font-size: 12px; color: var(--a-muted); font-family: var(--a-mono); }
 .bar__state b { color: var(--a-warn); font-weight: 500; }
 .bar__state.is-clean b { color: var(--a-accent); }
@@ -120,10 +122,16 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .grp > summary::-webkit-details-marker { display: none; }
 .grp > summary::before { content: "▸"; color: var(--a-faint); font-size: 11px; transition: transform .15s; }
 .grp[open] > summary::before { transform: rotate(90deg); }
-.grp__body { padding: 0 1rem 1rem; display: grid; gap: .9rem; }
+.grp__body {
+  padding: 0 1rem 1rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: .9rem;
+}
+.grp__body > * { min-width: 0; }
 .grp--nested { background: var(--a-panel-2); }
 
-.f { display: grid; gap: .3rem; }
+.f { display: grid; grid-template-columns: minmax(0, 1fr); gap: .3rem; min-width: 0; }
 .f > label {
   font-family: var(--a-mono); font-size: 10px; letter-spacing: .13em; text-transform: uppercase;
   color: var(--a-faint);
@@ -145,11 +153,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .color input[type="text"] { font-family: var(--a-mono); text-transform: uppercase; }
 
 /* repeatable lists */
-.list { display: grid; gap: .6rem; }
+.list { display: grid; grid-template-columns: minmax(0, 1fr); gap: .6rem; min-width: 0; }
 .list__item {
   border: 1px solid var(--a-line-2); border-radius: 9px; padding: .75rem;
-  background: var(--a-panel-2); display: grid; gap: .6rem; position: relative;
+  background: var(--a-panel-2); display: grid; grid-template-columns: minmax(0, 1fr);
+  gap: .6rem; position: relative; min-width: 0;
 }
+.list__item > * { min-width: 0; }
 .list__head { display: flex; align-items: center; gap: .5rem; }
 .list__n { font-family: var(--a-mono); font-size: 10px; color: var(--a-faint); letter-spacing: .12em; }
 .list__tools { margin-left: auto; display: flex; gap: .25rem; }
@@ -161,7 +171,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .list__tools button:hover { color: var(--a-fg); border-color: var(--a-muted); }
 .list__tools button.rm:hover { color: var(--a-err); border-color: var(--a-err); }
 .list__add { justify-self: start; }
-.list--simple .list__item { grid-template-columns: auto 1fr auto; align-items: center; padding: .4rem .5rem; }
+.list--simple .list__item { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; padding: .4rem .5rem; }
 
 /* ---------- publish dialog ---------- */
 dialog {
@@ -201,7 +211,44 @@ dialog::backdrop { background: rgba(0,0,0,.7); }
   .preview { display: none; }
 }
 @media (max-width: 720px) {
+  /* The toolbar must wrap, or the action buttons overlap and Publish becomes
+     unreachable on a phone — which is the main reason the admin exists. */
+  .bar {
+    height: auto;
+    min-height: var(--a-topbar);
+    flex-wrap: wrap;
+    padding: .55rem .75rem;
+    gap: .5rem;
+  }
+  .bar__tag, .bar__state { display: none; }
+  .bar__actions { width: 100%; gap: .35rem; }
+  .bar__actions .btn { flex: 1; justify-content: center; padding: .5rem .3rem; font-size: 12px; }
+  .t-long { display: none; }
+  .t-short { display: inline; }
+
   .wrap { grid-template-columns: 1fr; height: auto; }
-  .side { border-right: 0; border-bottom: 1px solid var(--a-line); }
-  .bar__state { display: none; }
+
+  /* Sections become a horizontal chip strip rather than a full screen of links */
+  .side {
+    display: flex;
+    gap: .35rem;
+    overflow-x: auto;
+    padding: .5rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--a-line);
+    -webkit-overflow-scrolling: touch;
+  }
+  .side__h { display: none; }
+  .side__item {
+    width: auto;
+    white-space: nowrap;
+    border-left: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: 6px;
+    padding: .45rem .7rem;
+  }
+  .side__item[aria-current="true"] { border-left: 0; border-bottom-color: var(--a-accent); }
+
+  .editor { padding: 1rem; }
+  dialog { width: min(520px, 94vw); }
 }

@@ -17,6 +17,7 @@
     published: null,   // what content.json held when the page loaded
     section: 'site',
     page: 'index.html',
+    server: null,   // null = no publish API; else { configured, authenticated, repo, missing }
   };
 
   /* ------------------------------------------------------------------ *
@@ -442,8 +443,14 @@
       var text = await res.text();
       var msg = res.status + ' on ' + path;
       try { msg += ' — ' + (JSON.parse(text).message || ''); } catch (e) { /* non-JSON */ }
-      if (res.status === 401) msg += ' (token rejected — check it has not expired)';
-      if (res.status === 404) msg += ' (check the owner/repo/branch, and that the token can reach this repository)';
+      if (res.status === 401) msg += ' — the token was rejected; it may have expired.';
+      if (res.status === 403) {
+        msg += ' — the token can read this repository but not write to it. ' +
+          'Re-create it with Repository access = "Only select repositories" (this one) ' +
+          'and Permissions > Repository > Contents: "Read and write". ' +
+          'Choosing "Public repositories" gives read-only access.';
+      }
+      if (res.status === 404) msg += ' — check the owner, repo and branch names, and that the token can reach this repository.';
       throw new Error(msg);
     }
     return res.json();
@@ -496,6 +503,65 @@
   }
 
   /* ------------------------------------------------------------------ *
+   * Server-side publishing (password login, token stays on the server)
+   * ------------------------------------------------------------------ */
+  async function api(path, body) {
+    var res = await fetch('/api/' + path, {
+      method: body ? 'POST' : 'GET',
+      headers: body ? { 'Content-Type': 'application/json' } : undefined,
+      body: body ? JSON.stringify(body) : undefined,
+      credentials: 'same-origin',
+      cache: 'no-store',
+    });
+    var data = null;
+    try { data = await res.json(); } catch (e) { /* not JSON */ }
+    if (!res.ok) throw new Error((data && data.error) || ('HTTP ' + res.status));
+    return data;
+  }
+
+  /* Probe for the publish API. A static host with no functions returns the
+     404 page (HTML), so anything that is not our JSON means token mode. */
+  async function detectServer() {
+    try {
+      var info = await api('session');
+      return (info && info.mode === 'server') ? info : null;
+    } catch (e) { return null; }
+  }
+
+  function buildFiles() {
+    var files = window.FluxTemplates.renderAll(state.content);
+    files['content.json'] = JSON.stringify(state.content, null, 2) + '\n';
+    return files;
+  }
+
+  async function publishViaServer(message) {
+    var files = buildFiles();
+    ghLog('Publishing ' + Object.keys(files).length + ' files…');
+    var out = await api('publish', { files: files, message: message });
+    ghLog('commit ' + String(out.commit).slice(0, 7) + ' on ' + out.branch, 'ok');
+    ghLog('Published. Your host will redeploy shortly.', 'ok');
+    return out;
+  }
+
+  function showPanel(which) {
+    ['login', 'ready', 'token'].forEach(function (p) {
+      var node = $('#panel-' + p);
+      if (node) node.hidden = (p !== which);
+    });
+    /* The "not configured" note sits alongside the token panel rather than
+       replacing it, so a half-set-up server never blocks publishing. */
+    $('#panel-unconfigured').hidden = !(which === 'token' && state.server && !state.server.configured);
+    var titles = { login: 'Sign in to publish', ready: 'Publish', token: 'Publish to GitHub' };
+    $('#dlg-title').textContent = titles[which] || 'Publish';
+    $('#gh-go').textContent = which === 'login' ? 'Sign in' : 'Publish';
+  }
+
+  function currentPanel() {
+    if (!state.server || !state.server.configured) return 'token';
+    return state.server.authenticated ? 'ready' : 'login';
+  }
+
+  /* ------------------------------------------------------------------ *
    * Wiring
    * ------------------------------------------------------------------ */
   function download(name, text, type) {
@@ -538,40 +604,109 @@
     });
 
     var dlg = $('#dlg-publish');
-    $('#btn-publish').addEventListener('click', function () {
-      var r = state.content.repo || {};
-      $('#dlg-repo').textContent = r.owner + '/' + r.name + ' @ ' + r.branch;
-      try {
-        var saved = localStorage.getItem(TOKEN_KEY);
-        if (saved) { $('#gh-token').value = saved; $('#gh-remember').checked = true; }
-      } catch (e) {}
-      $('#gh-log').innerHTML = ''; $('#gh-log').hidden = true;
+
+    function openPublish() {
+      var panel = currentPanel();
+      showPanel(panel);
+      $('#gh-log').innerHTML = '';
+      $('#gh-log').hidden = true;
+
+      if (state.server && state.server.repo) {
+        var r = state.server.repo;
+        var label = r.owner + '/' + r.name + ' @ ' + r.branch;
+        $('#ready-repo').textContent = label;
+        $('#login-repo').textContent = label;
+      }
+      if (state.server && !state.server.configured) {
+        $('#missing-vars').textContent =
+          ' A publish server is deployed but these environment variables are not set: ' +
+          state.server.missing.join(', ') + '. Set them on your host and redeploy to sign in with a password instead of a token. See the README.';
+      }
+      if (panel === 'token') {
+        var r2 = state.content.repo || {};
+        $('#dlg-repo').textContent = r2.owner + '/' + r2.name + ' @ ' + r2.branch;
+        try {
+          var saved = localStorage.getItem(TOKEN_KEY);
+          if (saved) { $('#gh-token').value = saved; $('#gh-remember').checked = true; }
+        } catch (e) {}
+      }
       dlg.showModal();
+      setTimeout(function () {
+        var focusTarget = panel === 'login' ? $('#admin-password') : (panel === 'token' ? $('#gh-token') : null);
+        if (focusTarget) focusTarget.focus();
+      }, 50);
+    }
+
+    $('#btn-publish').addEventListener('click', openPublish);
+
+    $('#btn-signout').addEventListener('click', async function () {
+      try { await api('logout', {}); } catch (e) {}
+      state.server.authenticated = false;
+      showPanel('login');
+      toast('Signed out.');
     });
 
+    function afterPublish() {
+      state.published = JSON.parse(JSON.stringify(state.content));
+      try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+      updateState();
+      toast('Published.');
+      setTimeout(function () { dlg.close(); }, 1400);
+    }
+
     $('#gh-go').addEventListener('click', async function () {
-      var token = $('#gh-token').value.trim();
-      if (!token) return toast('Paste a GitHub token first.', true);
       var btn = this;
+      var panel = currentPanel();
+
+      /* Step one in server mode: exchange the password for a session cookie. */
+      if (panel === 'login') {
+        var pw = $('#admin-password').value;
+        if (!pw) return toast('Enter your password.', true);
+        btn.disabled = true; btn.textContent = 'Signing in…';
+        try {
+          await api('login', { password: pw });
+          state.server.authenticated = true;
+          $('#admin-password').value = '';
+          showPanel('ready');
+          toast('Signed in.');
+        } catch (err) {
+          toast(err.message, true);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = currentPanel() === 'login' ? 'Sign in' : 'Publish';
+        }
+        return;
+      }
+
       btn.disabled = true;
       btn.textContent = 'Publishing…';
       try {
-        await publish(token, $('#gh-message').value.trim() || 'Update site content');
-        try {
-          if ($('#gh-remember').checked) localStorage.setItem(TOKEN_KEY, token);
-          else localStorage.removeItem(TOKEN_KEY);
-        } catch (e) {}
-        state.published = JSON.parse(JSON.stringify(state.content));
-        try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
-        updateState();
-        toast('Published to GitHub.');
-        setTimeout(function () { dlg.close(); }, 1400);
+        if (panel === 'ready') {
+          await publishViaServer($('#gh-message').value.trim() || 'Update site content');
+          afterPublish();
+        } else {
+          var token = $('#gh-token').value.trim();
+          if (!token) { toast('Paste a GitHub token first.', true); return; }
+          await publish(token, $('#gh-message-token').value.trim() || 'Update site content');
+          try {
+            if ($('#gh-remember').checked) localStorage.setItem(TOKEN_KEY, token);
+            else localStorage.removeItem(TOKEN_KEY);
+          } catch (e) {}
+          afterPublish();
+        }
       } catch (err) {
-        ghLog('FAILED: ' + err.message, 'err');
-        toast('Publish failed — see the log in the dialog.', true);
+        /* An expired cookie should send you back to the password prompt. */
+        if (state.server && /not signed in/i.test(err.message)) {
+          state.server.authenticated = false;
+          showPanel('login');
+          toast('Your session expired — sign in again.', true);
+        } else {
+          ghLog('FAILED: ' + err.message, 'err');
+          toast('Publish failed — see the log in the dialog.', true);
+        }
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Publish';
+        btn.textContent = currentPanel() === 'login' ? 'Sign in' : 'Publish';
       }
     });
 
@@ -621,12 +756,15 @@
         }
       } catch (e) { /* ignore a corrupt draft */ }
 
-      wire();
-      renderSidebar();
-      renderEditor();
-      renderPreview();
-      updateState();
-      if (restored) toast('Restored your unpublished draft from this browser.');
+      return detectServer().then(function (server) {
+        state.server = server;
+        wire();
+        renderSidebar();
+        renderEditor();
+        renderPreview();
+        updateState();
+        if (restored) toast('Restored your unpublished draft from this browser.');
+      });
     })
     .catch(function (e) {
       $('#ed-title').textContent = 'Could not load content.json';
