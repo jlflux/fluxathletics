@@ -301,7 +301,7 @@ ${brandTokens(c.brand)}
   /* ---------- pages ---------- */
   function home(c) {
     const p = c.home;
-    const cc = p.commandCenterSplit;
+    const cc = p.fieldhouseSplit;
     const tk = p.toolkitSplit;
     const cons = p.consultingSection;
     const bars = ['35', '58', '44', '88', '62', '40', '72', '51'];
@@ -436,8 +436,8 @@ ${ctaBand(c, p.cta)}
     return head(c, 'home', p.meta) + header(c, 'index') + '<main id="main">\n' + body + '</main>\n' + footer(c);
   }
 
-  function commandCenter(c) {
-    const p = c.commandCenter;
+  function fieldhouse(c) {
+    const p = c.fieldhouse;
     const body = `
 ${pageHero(p.hero, 'primary')}
 <div class="shell">
@@ -503,7 +503,7 @@ ${steps(p.steps, false)}
 
 ${ctaBand(c, p.cta)}
 `;
-    return head(c, 'command-center', p.meta) + header(c, 'command-center') + '<main id="main">\n' + body + '</main>\n' + footer(c);
+    return head(c, 'fieldhouse', p.meta) + header(c, 'fieldhouse') + '<main id="main">\n' + body + '</main>\n' + footer(c);
   }
 
   function toolkit(c) {
@@ -766,7 +766,7 @@ ${pageHero(p.hero, 'primary')}
 
   function sitemap(c) {
     const domain = String((c.site || {}).domain || '').replace(/\/$/, '');
-    const pages = ['', 'command-center.html', 'broadcasters-toolkit.html', 'consulting.html', 'about.html', 'contact.html'];
+    const pages = ['', 'fieldhouse.html', 'broadcasters-toolkit.html', 'consulting.html', 'about.html', 'contact.html'];
     const today = new Date().toISOString().slice(0, 10);
     return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -792,7 +792,7 @@ Sitemap: ${String((c.site || {}).domain || '').replace(/\/$/, '')}/sitemap.xml
   function renderAll(c) {
     return {
       'index.html': home(c),
-      'command-center.html': commandCenter(c),
+      'fieldhouse.html': fieldhouse(c),
       'broadcasters-toolkit.html': toolkit(c),
       'consulting.html': consulting(c),
       'about.html': about(c),

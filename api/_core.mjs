@@ -15,7 +15,7 @@ const SESSION_DAYS = 14;
    otherwise push arbitrary files into the repository. */
 const ALLOWED_PATHS = new Set([
   'index.html',
-  'command-center.html',
+  'fieldhouse.html',
   'broadcasters-toolkit.html',
   'consulting.html',
   'about.html',

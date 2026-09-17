@@ -25,7 +25,7 @@
    * ------------------------------------------------------------------ */
   var LABELS = {
     site: 'Site & identity', brand: 'Brand colours', nav: 'Navigation',
-    footer: 'Footer', home: 'Home page', commandCenter: 'Command Center',
+    footer: 'Footer', home: 'Home page', fieldhouse: 'Fieldhouse',
     toolkit: 'Broadcaster’s Toolkit', consulting: 'Consulting', about: 'About',
     contact: 'Contact', notFound: '404 page', repo: 'Publishing target',
 
@@ -41,7 +41,7 @@
     steps: 'Steps', style: 'Style',
 
     whatWeDo: '“What we do” intro', pillars: 'Three pillars',
-    commandCenterSplit: 'Command Center feature block',
+    fieldhouseSplit: 'Fieldhouse feature block',
     toolkitSplit: 'Toolkit feature block', consultingSection: 'Consulting block',
     howWeWork: 'How we work', marquee: 'Scrolling ticker words',
     mockRows: 'Dashboard mock rows', mockLabel: 'Mock window title',
@@ -80,7 +80,7 @@
   /* path -> { dataUrl, base64 } for images chosen but not yet published. */
   var pendingUploads = {};
 
-  var SECTION_ORDER = ['site', 'brand', 'nav', 'home', 'commandCenter', 'toolkit',
+  var SECTION_ORDER = ['site', 'brand', 'nav', 'home', 'fieldhouse', 'toolkit',
     'consulting', 'about', 'contact', 'notFound', 'footer', 'repo'];
 
   var SECTION_HELP = {
@@ -88,7 +88,7 @@
     brand: 'Change these and every page updates. Colours are applied to the site the moment you publish.',
     nav: 'The header and mobile menu. Changing a label here changes it on all seven pages at once.',
     home: 'Everything on the home page, top to bottom.',
-    commandCenter: 'The Athletics Command Center product page.',
+    fieldhouse: 'The Fieldhouse product page.',
     toolkit: 'The Broadcaster’s Toolkit product page.',
     consulting: 'The consulting page.',
     about: 'The about page.',
@@ -99,7 +99,7 @@
   };
 
   var SECTION_PAGE = {
-    home: 'index.html', commandCenter: 'command-center.html',
+    home: 'index.html', fieldhouse: 'fieldhouse.html',
     toolkit: 'broadcasters-toolkit.html', consulting: 'consulting.html',
     about: 'about.html', contact: 'contact.html', notFound: '404.html',
   };

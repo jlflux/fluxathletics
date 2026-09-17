@@ -7,11 +7,33 @@
   "headers": [
     {
       "source": "/admin.html",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     },
     {
       "source": "/assets/fonts/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/command-center.html",
+      "destination": "/fieldhouse.html",
+      "permanent": true
+    },
+    {
+      "source": "/command-center",
+      "destination": "/fieldhouse.html",
+      "permanent": true
     }
   ]
 }

@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 
 const OUT = process.argv[2] || path.join(__dirname, '..', '.shots');
-const PAGES = ['index', 'command-center', 'broadcasters-toolkit', 'consulting', 'about', 'contact'];
+const PAGES = ['index', 'fieldhouse', 'broadcasters-toolkit', 'consulting', 'about', 'contact'];
 
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });

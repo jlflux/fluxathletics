@@ -1,6 +1,6 @@
 # Flux Athletics — website
 
-Marketing site for Flux Athletics: the **Athletics Command Center**, the
+Marketing site for Flux Athletics: **Fieldhouse**, the
 **Broadcaster's Toolkit**, and sports marketing / media / event management
 **consulting**.
 
@@ -40,7 +40,7 @@ to `npm run build`.
 | File | Purpose |
 |---|---|
 | `index.html` | Home — hero, the three offerings, product previews, process |
-| `command-center.html` | Athletics Command Center — problem, modules, rollout, FAQ |
+| `fieldhouse.html` | Fieldhouse — problem, modules, rollout, FAQ |
 | `broadcasters-toolkit.html` | Broadcaster's Toolkit — the kit, compatibility, delivery |
 | `consulting.html` | Consulting — practice areas, engagement models, process |
 | `about.html` | About — positioning and principles |
@@ -188,7 +188,7 @@ there, or in the admin, rather than in the stylesheet.
 
 ```json
 "brand": {
-  "primary": "#0DF786",   // buttons, CTA band, Command Center
+  "primary": "#0DF786",   // buttons, CTA band, Fieldhouse
   "support": "#889165",   // Broadcaster's Toolkit, Consulting
   "ink":     "#0B0B0C",   // dark background
   "paper":   "#F5F3EF"    // light sections
